@@ -3,8 +3,10 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 export const constantRouterMap = [
-  //����Ĭ�ϵ�·����Ĭ����ʾ��½ҳ��
-  {path:'/',component:()=>import('@/views/login')}
+  { path: '/', component: () => import('@/views/login') },
+  { path: '/userInfo', component: () => import('@/views/userInfo') }
+
+  
 ]
 export default new VueRouter({
   scrollBehavior:()=>({y:0}),
