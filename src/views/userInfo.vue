@@ -4,7 +4,6 @@
     <el-table :data="userInfoList">
       <el-table-column label="id" prop="id"></el-table-column>
       <el-table-column label="username" prop="username"></el-table-column>
-      <el-table-column label="password" prop="password"></el-table-column>
       <el-table-column label="createTime" prop="createTime"></el-table-column>
       <el-table-column label="lastModifiedTime" prop="lastModifiedTime"></el-table-column>
     </el-table>
@@ -18,8 +17,7 @@ export default {
       msg:"userInfoList",
       userInfoList:[{
           id:"",
-          username:"admin",
-          password:"password",
+          username:"",
           createTime:"",
           lastModifiedTime:""
         }   

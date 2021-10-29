@@ -1,9 +1,12 @@
 <template>
   <div class="login">
-    <h1>{{ msg }}</h1>
-
-    <el-input v-model="userForm.username" placeholder="请输入用户名">用户名</el-input>
-    <el-input v-model="userForm.password" placeholder="请输入密码">密码</el-input>
+    <h1 class="msg">{{ msg }}</h1>
+    <div class="userInput">
+      <el-input class="el-input" v-model="userForm.username" placeholder="请输入用户名"
+        >用户名</el-input>
+      <el-input class="el-input" v-model="userForm.password" placeholder="请输入密码"
+        >密码</el-input>
+    </div>
     <el-button type="primary" @click="register">注册</el-button>
     <el-button type="primary" @click="login">登录</el-button>
   </div>
@@ -12,7 +15,7 @@
 <script>
 export default {
   name: "login",
-  clearUserInfo:false,
+  clearUserInfo: false,
   data() {
     return {
       msg: "Welcome to urras",
@@ -32,8 +35,8 @@ export default {
           console.log(result.data);
           if (status == 200) {
             this.$message({
-                message:'登陆成功',
-                type:'success'
+              message: "登陆成功",
+              type: "success",
             });
             localStorage.setItem("token", result.data.data.token);
             console.log(this.$store.getters.getToken);
@@ -41,7 +44,7 @@ export default {
               path: "/userInfo",
             });
           } else {
-            this.$message.error('登录失败 '+result.data.msg);
+            this.$message.error("登录失败 " + result.data.msg);
           }
         })
         .catch((err) => {
@@ -57,13 +60,13 @@ export default {
           console.log(result.data);
           if (status == 200) {
             this.$message({
-                message:'注册成功',
-                type:'success'
+              message: "注册成功",
+              type: "success",
             });
-          this.userForm.username = ""
-          this.userForm.password = ""
+            this.userForm.username = "";
+            this.userForm.password = "";
           } else {
-            this.$message.error('注册失败 '+result.data.msg);
+            this.$message.error("注册失败 " + result.data.msg);
           }
         })
         .catch((err) => {
@@ -90,5 +93,19 @@ li {
 }
 a {
   color: #42b983;
+}
+.msg {
+  color: tan;
+}
+.userInput {
+  width: 40%;
+  border: 30px solid white;
+  margin: auto;
+}
+.el-input{
+  width: 95%;
+  border: 10px solid white;
+  margin: auto;
+  position: relative;
 }
 </style>
