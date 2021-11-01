@@ -5,7 +5,10 @@ import App from './App'
 import './plugins/element.js'
 import router from './router'
 import store from "./store"
+import VueCodeMirror from 'vue-codemirror'
+import 'codemirror/lib/codemirror.css'
 
+Vue.use(VueCodeMirror)
 
 Vue.config.productionTip = false
 

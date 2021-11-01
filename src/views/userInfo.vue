@@ -7,10 +7,12 @@
       <el-table-column label="createTime" prop="createTime"></el-table-column>
       <el-table-column label="lastModifiedTime" prop="lastModifiedTime"></el-table-column>
     </el-table>
+    <doProgram></doProgram>
   </div>
 </template>
 
 <script>
+import doProgram from '@/components/doProgram'
 export default {
   data () {
     return {
@@ -23,6 +25,9 @@ export default {
         }   
       ]
     }
+  },
+  components:{
+    doProgram,
   },
   methods:{
   },

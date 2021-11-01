@@ -1,11 +1,11 @@
 <template>
   <div class="login">
-    <h1 class="msg">{{ msg }}</h1>
+    <Anarres></Anarres>
     <div class="userInput">
       <el-input class="el-input" v-model="userForm.username" placeholder="请输入用户名"
         >用户名</el-input>
       <el-input class="el-input" v-model="userForm.password" placeholder="请输入密码"
-        >密码</el-input>
+        show-password>密码</el-input>
     </div>
     <el-button type="primary" @click="register">注册</el-button>
     <el-button type="primary" @click="login">登录</el-button>
@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import Anarres from '@/components/Anarres'
 export default {
   name: "login",
   clearUserInfo: false,
@@ -25,6 +26,9 @@ export default {
       },
       info: "",
     };
+  },
+  components:{
+    Anarres,
   },
   methods: {
     login() {

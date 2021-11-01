@@ -4,7 +4,8 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 export const constantRouterMap = [
   { path: '/', component: () => import('@/views/login') },
-  { path: '/userInfo', component: () => import('@/views/userInfo') }
+  { path: '/userInfo', component: () => import('@/views/userInfo') },
+  { path: '/doProgram', component: () => import('@/components/doProgram') }
 
   
 ]
