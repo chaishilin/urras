@@ -64,7 +64,7 @@ export default {
       getOutput: false,
       programInfo: {
         input: "",
-        code: 'import java.util.*;\nimport java.lang.*;\npublic class Main {\n    public static void main(String[] args) {\n        //int a = Integer.parseInt(args[0]);\n        //double b = Double.parseDouble(args[0]);\n        /*\n        int[] aList = new int[args.length];\n        for(int i = 0;i < args.length; i++){\n            aList[i] = Integer.parseInt(args[i]);\n        }\n        */\n        \n        System.out.println("input:");\n        for(int i = 0;i < args.length; i++){\n            System.out.print(args[i]+" ");\n        }\n        System.out.println();\n        System.out.println("output:");\n        yourFunction();\n    }\n    public static void yourFunction(){\n\n    }\n}\n',
+        code: 'public int yourFunction(int a,int b){\n        //示例：求数字区间[a,b]的和\n        int sum = 0;\n        for(int i = a;i<=b;i++){\n            sum += i;\n        }\n        return sum;\n    }\n',
         language: "java",
         output: "",
         outputList: [],
