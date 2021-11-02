@@ -1,30 +1,17 @@
-# urras
+# urras 一个前端项目
 
 > A Vue.js project
 
-## Build Setup
+## 名称来自于厄休拉·勒古恩（Ursula K. Le Guin）的小说《失去一切的人》(The Dispossessed)
+## 阿纳瑞斯(anarres)与乌拉斯（urras）是两颗行星，他们绕着彼此转动
 
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
-```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## VUE List
+- login.vue 登录界面
+- register.vue 注册界面
+- resetPassword.vue 重设密码界面
+- programList.vue 程序展示列表
+- recommand.vue 接口推荐列表
+- top.vue 顶端状态栏
+- menu.vue 菜单
+- doProgram.vue 程序运行组件
+- content.vue 程序文本描述组件
