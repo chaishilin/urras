@@ -43,7 +43,7 @@ export default {
               type: "success",
             });
             localStorage.setItem("token", result.data.data.token);
-            console.log(this.$store.getters.getToken);
+            localStorage.setItem("userId", result.data.data.userId);
             this.$router.push({
               path: "/userInfo",
             });

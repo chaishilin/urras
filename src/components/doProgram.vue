@@ -63,9 +63,14 @@ export default {
     return {
       getOutput: false,
       programInfo: {
-        input: "1 10",
-        code: 'public int yourFunction(int a,int b){\n        //示例：求数字区间[a,b]的和\n        int sum = 0;\n        for(int i = a;i<=b;i++){\n            sum += i;\n        }\n        return sum;\n    }\n',
         language: "java",
+        code: 'public int yourFunction(int a,int b){\n        //示例：求数字区间[a,b]的和\n        int sum = 0;\n        for(int i = a;i<=b;i++){\n            sum += i;\n        }\n        return sum;\n    }\n',
+        createrId:localStorage.getItem("userid"),
+        title:"",
+        content:"",
+        state:"",
+        publicState:"",
+        input: "1 10",
         output: "",
         outputList: [],
       },
