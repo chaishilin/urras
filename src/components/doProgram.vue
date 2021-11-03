@@ -1,31 +1,50 @@
 <template>
   <div class="doProgram">
-    <el-input
-      class="el-input"
-      v-model="programInfo.input"
-      placeholder="接口输入"
-    ></el-input>
-    <el-radio-group v-model="programInfo.language">
-      <el-radio label="java">java</el-radio>
-      <el-radio label="python">python</el-radio>
-      <el-radio label="golang">golang</el-radio>
-    </el-radio-group>
-    <codemirror
-      class="code-mirror"
-      v-model:value="programInfo.code"
-      :options="cmOptions"
-    >
-    </codemirror>
-
-    <br />
-    <el-button type="primary" @click="runCode" v-loading="getOutput"
-      >运行</el-button
-    >
-    <br />
-    <div class="output">
-      <div v-if="getOutput">正在获得运行结果...</div>
-      <div v-for="item in programInfo.outputList">
-        <div v-if="item != ''">{{ item }}</div>
+    <div class="left-box">      
+      <div>
+        <span>接口标题</span>
+        <el-input v-model="programInfo.title" placeholder="接口标题"></el-input>
+      </div>
+      <div>
+        <quill-editor
+          ref="myTextEditor"
+          v-model="programInfo.content"
+          :options="editorOption"
+          style="height: 600px; margin-bottom: 10px"
+        ></quill-editor>
+      </div>
+    </div>
+    <div class="right-box">
+      <span>接口输入</span>
+      <el-input
+        class="el-input"
+        v-model="programInfo.input"
+        placeholder="接口输入"
+      ></el-input>
+      <br>
+      <el-radio-group v-model="programInfo.language">
+        <el-radio label="java">java</el-radio>
+        <el-radio label="python">python</el-radio>
+        <el-radio label="golang">golang</el-radio>
+      </el-radio-group>
+      <codemirror
+        class="code-mirror"
+        v-model:value="programInfo.code"
+        :options="cmOptions"
+      >
+      </codemirror>
+      <br>
+      <el-button type="primary" @click="runCode" v-loading="getOutput"
+        >运行</el-button
+      >
+      <el-button type="primary" @click="saveCode" v-loading="getSave"
+        >保存</el-button
+      ><br>
+      <div class="output">
+        <div v-if="getOutput">正在获得运行结果...</div>
+        <div v-for="item in programInfo.outputList">
+          <div v-if="item != ''">{{ item }}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -62,14 +81,16 @@ export default {
   data() {
     return {
       getOutput: false,
+      getSave: false,
+      editorOption: {},
       programInfo: {
         language: "java",
-        code: 'public int yourFunction(int a,int b){\n        //示例：求数字区间[a,b]的和\n        int sum = 0;\n        for(int i = a;i<=b;i++){\n            sum += i;\n        }\n        return sum;\n    }\n',
-        createrId:localStorage.getItem("userid"),
-        title:"",
-        content:"",
-        state:"",
-        publicState:"",
+        code: "public int yourFunction(int a,int b){\n        //示例：求数字区间[a,b]的和\n        int sum = 0;\n        for(int i = a;i<=b;i++){\n            sum += i;\n        }\n        return sum;\n    }\n",
+        createrId: localStorage.getItem("userid"),
+        title: "",
+        content: "输入接口描述...",
+        state: "",
+        publicState: "",
         input: "1 10",
         output: "",
         outputList: [],
@@ -130,6 +151,32 @@ export default {
           this.getOutput = false;
         });
     },
+
+    saveCode() {
+      this.getSave = true;
+      this.programInfo.outputList = [];
+      this.$store
+        .dispatch("SaveProgram", this.programInfo)
+        .then((result) => {
+          let status = result.data.code;
+          console.log(result.data);
+          if (status == 200) {
+            this.$message({
+              message: "保存成功",
+              type: "success",
+            });
+          } else {
+            this.$message.error("调用失败 " + result.data.msg);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          return false;
+        })
+        .finally(() => {
+          this.getSave = false;
+        });
+    },
   },
 };
 </script>
@@ -168,7 +215,7 @@ a {
 
 .el-input {
   width: 30%;
-  font-size: 20px;
+  font-size: 15px;
   border: 10px solid white;
 }
 .el-radio-group {
@@ -176,9 +223,25 @@ a {
   border: 10px solid white;
 }
 .el-radio /deep/ .el-radio__label {
-  font-size: 25px !important;
+  font-size: 15px !important;
 }
 .el-button {
   border: 10px solid white;
+}
+.left-box,
+.right-box {
+  position: absolute;
+  width: 45%;
+  height: 100%;
+}
+.left-box {
+  background: white;
+  border: 10px solid white;
+}
+.right-box {
+  background: white;
+  border: 10px solid white;
+
+  left: 50%;
 }
 </style>

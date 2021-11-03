@@ -1,13 +1,13 @@
 <template>
   <div class="userInfo">
     <h1>{{ msg }}</h1>
-    <el-table :data="userInfoList">
+    <!-- <el-table :data="userInfoList">
       <el-table-column label="userId" prop="userId"></el-table-column>
       <el-table-column label="username" prop="username"></el-table-column>
       <el-table-column label="userPhone" prop="userPhone"></el-table-column>
       <el-table-column label="userEmail" prop="userEmail"></el-table-column>
       <el-table-column label="userState" prop="userState"></el-table-column>
-    </el-table>
+    </el-table> -->
     <doProgram></doProgram>
   </div>
 </template>
@@ -17,7 +17,7 @@ import doProgram from "@/components/doProgram";
 export default {
   data() {
     return {
-      msg: "userInfoList",
+      msg: "接口详情",
       userInfoList: [
         {
           userId: "",
