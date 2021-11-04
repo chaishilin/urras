@@ -15,3 +15,11 @@ export function saveProgram(params) {
         data: params
     })
 }
+export function programList(params) {
+    //远程运行程序接口
+    return request({
+        url: '/programList',
+        method: 'post',
+        data: params
+    })
+}

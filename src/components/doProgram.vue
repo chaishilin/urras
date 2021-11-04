@@ -1,6 +1,6 @@
 <template>
   <div class="doProgram">
-    <div class="left-box">      
+    <div class="left-box">
       <div>
         <span>接口标题</span>
         <el-input v-model="programInfo.title" placeholder="接口标题"></el-input>
@@ -21,7 +21,7 @@
         v-model="programInfo.input"
         placeholder="接口输入"
       ></el-input>
-      <br>
+      <br />
       <el-radio-group v-model="programInfo.language">
         <el-radio label="java">java</el-radio>
         <el-radio label="python">python</el-radio>
@@ -33,13 +33,14 @@
         :options="cmOptions"
       >
       </codemirror>
-      <br>
       <el-button type="primary" @click="runCode" v-loading="getOutput"
         >运行</el-button
       >
       <el-button type="primary" @click="saveCode" v-loading="getSave"
         >保存</el-button
-      ><br>
+      ><el-button type="primary" @click="programList" v-loading="getSave"
+        >返回</el-button
+      ><br />
       <div class="output">
         <div v-if="getOutput">正在获得运行结果...</div>
         <div v-for="item in programInfo.outputList">
@@ -87,7 +88,7 @@ export default {
         language: "java",
         code: "public int yourFunction(int a,int b){\n        //示例：求数字区间[a,b]的和\n        int sum = 0;\n        for(int i = a;i<=b;i++){\n            sum += i;\n        }\n        return sum;\n    }\n",
         createrId: localStorage.getItem("userid"),
-        title: "",
+        title: "这是个模板",
         content: "输入接口描述...",
         state: "",
         publicState: "",
@@ -122,6 +123,35 @@ export default {
   },
   component: {
     codemirror,
+  },
+  mounted() {
+    if (this.$route.query.hasOwnProperty("programId")) {
+      console.log(this.$route.query.programId);
+      console.log("haha ");
+      let newProgramInfo = {
+        programId: this.$route.query.programId,
+      };
+      this.$store
+        .dispatch("ProgramList", newProgramInfo)
+        .then((result) => {
+          let status = result.data.code;
+          console.log(result.data);
+          if (status == 200) {
+            if (result.data.data.length != 0) {
+              this.programInfo = result.data.data[0];
+            }
+          } else {
+            this.$message.error("调用失败 " + result.data.msg);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          return false;
+        })
+        .finally(() => {
+          this.getOutput = false;
+        });
+    }
   },
   methods: {
     runCode() {
@@ -176,6 +206,12 @@ export default {
         .finally(() => {
           this.getSave = false;
         });
+    },
+
+    programList() {
+      this.$router.push({
+        path: "/programList",
+      });
     },
   },
 };
