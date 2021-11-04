@@ -2,10 +2,19 @@
   <div class="login">
     <Anarres></Anarres>
     <div class="userInput">
-      <el-input class="el-input" v-model="userForm.username" placeholder="请输入用户名"
-        >用户名</el-input>
-      <el-input class="el-input" v-model="userForm.password" placeholder="请输入密码"
-        show-password>密码</el-input>
+      <el-input
+        class="el-input"
+        v-model="userForm.username"
+        placeholder="请输入用户名"
+        >用户名</el-input
+      >
+      <el-input
+        class="el-input"
+        v-model="userForm.password"
+        placeholder="请输入密码"
+        show-password
+        >密码</el-input
+      >
     </div>
     <el-button type="primary" @click="register">注册</el-button>
     <el-button type="primary" @click="login">登录</el-button>
@@ -13,7 +22,7 @@
 </template>
 
 <script>
-import Anarres from '@/components/Anarres'
+import Anarres from "@/components/Anarres";
 export default {
   name: "login",
   clearUserInfo: false,
@@ -27,7 +36,7 @@ export default {
       info: "",
     };
   },
-  components:{
+  components: {
     Anarres,
   },
   methods: {
@@ -44,8 +53,10 @@ export default {
             });
             localStorage.setItem("token", result.data.data.token);
             localStorage.setItem("userId", result.data.data.userId);
+            localStorage.setItem("username", result.data.data.username);
+
             this.$router.push({
-              path: "/userInfo",
+              path: "/programListPage",
             });
           } else {
             this.$message.error("登录失败 " + result.data.msg);
@@ -106,7 +117,7 @@ a {
   border: 30px solid white;
   margin: auto;
 }
-.el-input{
+.el-input {
   width: 95%;
   border: 10px solid white;
   margin: auto;

@@ -8,12 +8,10 @@
       <el-table-column label="userEmail" prop="userEmail"></el-table-column>
       <el-table-column label="userState" prop="userState"></el-table-column>
     </el-table> -->
-    <doProgram></doProgram>
   </div>
 </template>
 
 <script>
-import doProgram from "@/components/doProgram";
 export default {
   data() {
     return {

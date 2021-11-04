@@ -1,4 +1,4 @@
-import { login } from "../../api/login"
+import { login, logout } from "../../api/login"
 import { register } from "../../api/register"
 import {userInfoList} from "../../api/userInfoList"
 
@@ -46,6 +46,17 @@ const user = {
         UserInfoList({ commit }) {
             return new Promise((resolve, reject) => {
                 userInfoList().then((responce) => {
+                    commit('')
+                    resolve(responce)
+                }).catch((err) => {
+                    reject(err)
+                });
+            })
+        },
+        //用户退出
+        UserLogout({ commit }) {
+            return new Promise((resolve, reject) => {
+                logout().then((responce) => {
                     commit('')
                     resolve(responce)
                 }).catch((err) => {

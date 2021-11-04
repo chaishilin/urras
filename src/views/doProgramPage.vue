@@ -1,5 +1,6 @@
 <template>
   <div class="doProgram">
+    <AppHeader></AppHeader>
     <div class="left-box">
       <div>
         <span>接口标题</span>
@@ -53,6 +54,7 @@
 
 <script>
 import { codemirror } from "vue-codemirror";
+import AppHeader from "@/components/appHeader.vue";
 
 // 我这里引入的是js语言文件
 import "codemirror/mode/sql/sql.js";
@@ -62,6 +64,7 @@ import "codemirror/mode/javascript/javascript.js";
 import "codemirror/theme/dracula.css";
 //编辑器代码高亮css文件
 import "codemirror/addon/hint/show-hint.css";
+import appHeader from '../components/appHeader.vue';
 //代码折叠文件
 require("codemirror/addon/fold/foldcode.js");
 require("codemirror/addon/fold/foldgutter.js");
@@ -121,21 +124,22 @@ export default {
       },
     };
   },
-  component: {
+  components: {
     codemirror,
+    AppHeader,
   },
   mounted() {
     if (this.$route.query.hasOwnProperty("programId")) {
-      console.log(this.$route.query.programId);
-      console.log("haha ");
+      //console.log(this.$route.query.programId);
       let newProgramInfo = {
         programId: this.$route.query.programId,
+        createrId:localStorage.getItem("userId"),
       };
       this.$store
         .dispatch("ProgramList", newProgramInfo)
         .then((result) => {
           let status = result.data.code;
-          console.log(result.data);
+          //console.log(result.data);
           if (status == 200) {
             if (result.data.data.length != 0) {
               this.programInfo = result.data.data[0];
@@ -210,7 +214,7 @@ export default {
 
     programList() {
       this.$router.push({
-        path: "/programList",
+        path: "/programListPage",
       });
     },
   },

@@ -11,3 +11,11 @@ export function login(username, password) {
     })
 }
 
+export function logout() {
+    //退出登录接口
+    return request({
+        url: '/logout',
+        method: 'post'
+    })
+}
+

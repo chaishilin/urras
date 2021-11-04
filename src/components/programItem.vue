@@ -2,7 +2,10 @@
   <el-card class="box-card">
     <div slot="header" class="clearfix">
       <span>{{ info.title }}</span>
-      <el-button style="float: right; padding: 3px 0" type="info" @click="loadDetail(info.programId)"
+      <el-button
+        style="float: right; padding: 3px 0"
+        type="info"
+        @click="loadDetail(info.programId)"
         >打开详情</el-button
       >
     </div>
@@ -13,7 +16,7 @@
       {{ "编程语言：" + info.language }}
     </div>
     <div class="text item">
-      {{ "内容：" + info.content }}
+      {{ "内容：" + getContentAbstract(info.content)}}
     </div>
   </el-card>
 </template>
@@ -22,29 +25,37 @@ export default {
   data() {
     return {
       programInfo: {
-        programId:"022021110300019",
+        programId: "022021110300019",
         language: "java",
         createrId: localStorage.getItem("userid"),
         title: "前n项和",
-        content:"wdefghhgfdsadfghnjhfd",
+        content: "wdefghhgfdsadfghnjhfd",
         state: "",
         publicState: "",
         createrName: "(*^_^*)",
       },
     };
   },
-  props:{
-      info:this.programInfo,//programInfo是默认值
+  props: {
+    info: this.programInfo, //programInfo是默认值，vue组件的传参
   },
-  methods:{
-      loadDetail(programId){
-          console.log(programId)
-          this.$router.push({
-              path: "/doProgram",
-              query:{programId:programId},
-            });
+  methods: {
+    loadDetail(programId) {
+      console.log(programId);
+      this.$router.push({
+        path: "/doProgramPage",
+        query: { programId: programId },
+      });
+    },
+    getContentAbstract(content){
+      var result = content.replace(/<[^>]+>/g,"");
+      if(result.length > 10){
+        return result.substring(0,20) + "...";
+      }else{
+        return result;
       }
-  }
+    }
+  },
 };
 </script>
 
@@ -72,7 +83,7 @@ h2 {
   clear: both;
 }
 .box-card {
-  width:50ch;
+  width: 50ch;
   float: left;
   border: 10px solid tan;
   height: 200px;

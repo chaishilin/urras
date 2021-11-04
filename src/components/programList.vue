@@ -15,7 +15,7 @@ import programItem from "@/components/programItem";
 export default {
   data() {
     return {
-      msg: "接口清单",
+      msg: "程序清单",
       programInfo: {
         createrId: localStorage.getItem("userId"),
       },
@@ -41,16 +41,16 @@ export default {
       .dispatch("ProgramList", this.programInfo)
       .then((result) => {
         let status = result.data.code;
-        console.log(result.data);
+        //console.log(result.data);
         if (status == 200) {
           this.programInfoList = result.data.data;
-          console.log("yes");
+          //console.log("yes");
         } else if (status == 401) {
           this.$router.push({
             path: "/",
           });
         } else {
-          console.log("no");
+          //console.log("no");
           alert(result.data.msg);
         }
       })
@@ -62,7 +62,7 @@ export default {
   methods:{
     createProgram(){
       this.$router.push({
-              path: "/doProgram",
+              path: "/doProgramPage",
             });
     }
   }
@@ -77,6 +77,7 @@ h2 {
 }
 .msg{
   color: tan;
+  font-size: 30px;
 }
 .info{
   border: 10px solid white;
