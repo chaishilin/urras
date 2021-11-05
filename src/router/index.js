@@ -10,8 +10,10 @@ export const constantRouterMap = [
   { path: '/programList', component: () => import('@/components/programList') },
   { path: '/programItem', component: () => import('@/components/programItem') },
   { path: '/labelBar', component: () => import('@/components/labelBar') },
+  { path: '/register', component: () => import('@/views/register') },
+  { path: '/resetPassword', component:() => import('@/views/resetPassword')},
 
-  { path: '/appHeader', component: () => import('@/components/appHeader') }
+{ path: '/appHeader', component: () => import('@/components/appHeader') }
 
 
 ]

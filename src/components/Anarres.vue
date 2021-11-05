@@ -1,6 +1,7 @@
 <template>
   <div class="Anarres">
     <h1 class="msg">{{ msg }}</h1>
+    <h3 class="msg">{{msg2}}</h3>
   </div>
 </template>
 
@@ -9,6 +10,7 @@ export default {
   data() {
     return {
       msg: "Welcome to Anarres",
+      msg2: "Anarres is a planet",
     };
   }
 };

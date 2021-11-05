@@ -16,8 +16,9 @@
         >密码</el-input
       >
     </div>
-    <el-button type="primary" @click="register">注册</el-button>
     <el-button type="primary" @click="login">登录</el-button>
+    <el-link type="primary" @click="registerPage">注册</el-link>
+    <el-link type="primary" @click="resetPasswordPage">忘记密码</el-link>
   </div>
 </template>
 
@@ -67,26 +68,15 @@ export default {
           return false;
         });
     },
-    register() {
-      this.$store
-        .dispatch("Register", this.userForm)
-        .then((result) => {
-          let status = result.data.code;
-          console.log(result.data);
-          if (status == 200) {
-            this.$message({
-              message: "注册成功",
-              type: "success",
-            });
-            this.userForm.username = "";
-            this.userForm.password = "";
-          } else {
-            this.$message.error("注册失败 " + result.data.msg);
-          }
-        })
-        .catch((err) => {
-          return false;
-        });
+    registerPage() {
+      this.$router.push({
+        path: "/register",
+      });
+    },
+    resetPasswordPage() {
+      this.$router.push({
+        path: "/resetPassword",
+      });
     },
   },
 };
@@ -109,12 +99,10 @@ li {
 a {
   color: #42b983;
 }
-.msg {
-  color: tan;
-}
+
 .userInput {
   width: 40%;
-  border: 30px solid white;
+  border: 10px solid white;
   margin: auto;
 }
 .el-input {

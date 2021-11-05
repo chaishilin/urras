@@ -1,4 +1,4 @@
-import { login, logout } from "../../api/login"
+import { login, logout,resetPassword } from "../../api/login"
 import { register } from "../../api/register"
 import {userInfoList} from "../../api/userInfoList"
 
@@ -58,6 +58,16 @@ const user = {
             return new Promise((resolve, reject) => {
                 logout().then((responce) => {
                     commit('')
+                    resolve(responce)
+                }).catch((err) => {
+                    reject(err)
+                });
+            })
+        },
+        //修改密码
+        ResetPassword({ commit },params) {
+            return new Promise((resolve, reject) => {
+                resetPassword(params).then((responce) => {
                     resolve(responce)
                 }).catch((err) => {
                     reject(err)

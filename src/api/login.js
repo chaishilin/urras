@@ -19,3 +19,12 @@ export function logout() {
     })
 }
 
+
+export function resetPassword(params) {
+    //修改密码接口
+    return request({
+        url: '/resetPassword',
+        method: 'post',
+        data:params
+    })
+}
