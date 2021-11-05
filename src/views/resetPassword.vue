@@ -50,6 +50,10 @@ export default {
       });
     },
     resetPassword() {
+      if (!/.*@.*.com/.test(this.userForm.userEmail)) {
+        this.$message.error("邮箱名称不合法");
+        return;
+      }
       if (this.userForm.username.length < 2) {
         this.$message.error("用户名请大于两个字 ");
         return;

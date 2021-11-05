@@ -39,9 +39,12 @@
       >
       <el-button type="primary" @click="saveCode" v-loading="getSave"
         >保存</el-button
-      ><el-button type="primary" @click="programList" v-loading="getSave"
+      ><el-button type="primary" @click="programList"
         >返回</el-button
-      ><br />
+      ><el-button type="primary" @click="deleteProgram"
+        >删除</el-button
+      >
+      <br />
       <div class="output">
         <div v-if="getOutput">正在获得运行结果...</div>
         <div v-for="item in programInfo.outputList">
@@ -217,6 +220,33 @@ export default {
         path: "/programListPage",
       });
     },
+    deleteProgram() {
+      this.getSave = true;
+      this.programInfo.outputList = [];
+      this.$store
+        .dispatch("DeleteProgram", this.programInfo.programId)
+        .then((result) => {
+          let status = result.data.code;
+          console.log(result.data);
+          if (status == 200) {
+            this.$message({
+              message: "删除成功",
+              type: "success",
+            });
+            this.programList();
+          } else {
+            this.$message.error("删除失败 " + result.data.msg);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          return false;
+        })
+        .finally(() => {
+          this.getSave = false;
+        });
+    },
+    
   },
 };
 </script>

@@ -23,3 +23,14 @@ export function programList(params) {
         data: params
     })
 }
+
+export function deleteProgram(programId) {
+    //删除程序
+    return request({
+        url: '/deleteProgram',
+        method: 'post',
+        data: {
+            programId,
+        },
+    })
+}

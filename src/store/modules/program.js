@@ -1,4 +1,4 @@
-import { doProgram,saveProgram,programList } from "../../api/program"
+import { doProgram,saveProgram,programList,deleteProgram } from "../../api/program"
 
 const program = {
     actions: {
@@ -31,6 +31,17 @@ const program = {
             return new Promise((resolve, reject) => {
                 //封装一个promise
                 programList(programInfo).then((responce) => {
+                    resolve(responce)//将结果封装进resolve
+                }).catch((err) => {
+                    reject(err)
+                });
+            })
+        },
+        //删除程序
+        DeleteProgram({ commit }, programId) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
+            return new Promise((resolve, reject) => {
+                //封装一个promise
+                deleteProgram(programId).then((responce) => {
                     resolve(responce)//将结果封装进resolve
                 }).catch((err) => {
                     reject(err)
