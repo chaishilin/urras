@@ -39,9 +39,8 @@
       >
       <el-button type="primary" @click="saveCode" v-loading="getSave"
         >保存</el-button
-      ><el-button type="primary" @click="programList"
-        >返回</el-button
-      ><el-button type="primary" @click="deleteProgram"
+      ><el-button type="primary" @click="programList">返回</el-button
+      ><el-button type="primary" @click="deleteProgram" v-if="canDelete"
         >删除</el-button
       >
       <br />
@@ -67,7 +66,7 @@ import "codemirror/mode/javascript/javascript.js";
 import "codemirror/theme/dracula.css";
 //编辑器代码高亮css文件
 import "codemirror/addon/hint/show-hint.css";
-import appHeader from '../components/appHeader.vue';
+import appHeader from "../components/appHeader.vue";
 //代码折叠文件
 require("codemirror/addon/fold/foldcode.js");
 require("codemirror/addon/fold/foldgutter.js");
@@ -89,6 +88,7 @@ export default {
     return {
       getOutput: false,
       getSave: false,
+      canDelete: false,
       editorOption: {},
       programInfo: {
         language: "java",
@@ -134,9 +134,10 @@ export default {
   mounted() {
     if (this.$route.query.hasOwnProperty("programId")) {
       //console.log(this.$route.query.programId);
+      this.canDelete = true; //如果有programId 那么当然是可以删除的
       let newProgramInfo = {
         programId: this.$route.query.programId,
-        createrId:localStorage.getItem("userId"),
+        createrId: localStorage.getItem("userId"),
       };
       this.$store
         .dispatch("ProgramList", newProgramInfo)
@@ -147,6 +148,11 @@ export default {
             if (result.data.data.length != 0) {
               this.programInfo = result.data.data[0];
             }
+          } else if (status == 401) {
+            this.$message.error("请先登录");
+            this.$router.push({
+              path: "/",
+            });
           } else {
             this.$message.error("调用失败 " + result.data.msg);
           }
@@ -176,6 +182,11 @@ export default {
             });
             this.programInfo.output = result.data.data.result;
             this.programInfo.outputList = this.programInfo.output.split("\n");
+          } else if (status == 401) {
+            this.$message.error("请先登录");
+            this.$router.push({
+              path: "/",
+            });
           } else {
             this.$message.error("调用失败 " + result.data.msg);
           }
@@ -199,8 +210,17 @@ export default {
           console.log(result.data);
           if (status == 200) {
             this.$message({
-              message: "保存成功",
+              message: result.data.msg,
               type: "success",
+            });
+            if (result.data.data != "") {
+              this.programInfo.programId = result.data.data;//如果保存后有了programId，会自动绑定，下次请求时会自动带上
+              this.canDelete = result.data.data != ""; //保存后就可以删除了
+            }
+          } else if (status == 401) {
+            this.$message.error("请先登录");
+            this.$router.push({
+              path: "/",
             });
           } else {
             this.$message.error("调用失败 " + result.data.msg);
@@ -234,6 +254,11 @@ export default {
               type: "success",
             });
             this.programList();
+          } else if (status == 401) {
+            this.$message.error("请先登录");
+            this.$router.push({
+              path: "/",
+            });
           } else {
             this.$message.error("删除失败 " + result.data.msg);
           }
@@ -246,7 +271,6 @@ export default {
           this.getSave = false;
         });
     },
-    
   },
 };
 </script>
