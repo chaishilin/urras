@@ -34,3 +34,12 @@ export function deleteProgram(programId) {
         },
     })
 }
+
+export function supportLanguageList() {
+    //系统支持的编程语言
+    return request({
+        url: '/supportLanguageList',
+        method: 'get'
+    })
+}
+

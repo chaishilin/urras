@@ -23,15 +23,20 @@
         placeholder="接口输入"
       ></el-input>
       <br />
-      <el-radio-group v-model="programInfo.language">
-        <el-radio label="java">java</el-radio>
-        <el-radio label="python">python</el-radio>
-        <el-radio label="golang">golang</el-radio>
-      </el-radio-group>
+      <el-select v-model="programInfo.language" placeholder="请选择" @change="chooseLanguage" filterable>
+        <el-option
+          v-for="item in supportLanguageList"
+          :key="item"
+          :label="item"
+          :value="item"
+        >
+        </el-option>
+      </el-select>
       <codemirror
         class="code-mirror"
         v-model:value="programInfo.code"
         :options="cmOptions"
+        :onChange="haha()"
       >
       </codemirror>
       <el-button type="primary" @click="runCode" v-loading="getOutput"
@@ -89,9 +94,11 @@ export default {
       getOutput: false,
       getSave: false,
       canDelete: false,
+      supportLanguageList:[],
       editorOption: {},
       programInfo: {
         language: "java",
+        codeMap:{},
         code: "public int yourFunction(int a,int b){\n        //示例：求数字区间[a,b]的和\n        int sum = 0;\n        for(int i = a;i<=b;i++){\n            sum += i;\n        }\n        return sum;\n    }\n",
         createrId: localStorage.getItem("userid"),
         title: "这是个模板",
@@ -147,6 +154,12 @@ export default {
           if (status == 200) {
             if (result.data.data.length != 0) {
               this.programInfo = result.data.data[0];
+              for(let item in this.programInfo.codeMap){
+                this.programInfo.language = item;
+                this.programInfo.code = this.programInfo.codeMap[item];
+                break;//选择第一个支持的语言
+              }
+              
             }
           } else if (status == 401) {
             this.$message.error("请先登录");
@@ -165,8 +178,30 @@ export default {
           this.getOutput = false;
         });
     }
+    this.$store
+      .dispatch("SupportLanguageList")
+      .then((result) => {
+        this.supportLanguageList = result.data.data;
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
+      });
   },
   methods: {
+    haha(){
+      console.log('gaga')
+      console.log(this.programInfo.code) 
+      this.programInfo.codeMap[this.programInfo.language] = this.programInfo.code
+    },
+    chooseLanguage(){ 
+      if(this.programInfo.codeMap.hasOwnProperty(this.programInfo.language)){
+        //如果该接口的选中语言内容不为空，则填补该语言代码
+      this.programInfo.code=this.programInfo.codeMap[this.programInfo.language];
+      }else{
+        this.programInfo.code="\n\n\n";
+      }
+    },
     runCode() {
       this.getOutput = true;
       this.programInfo.outputList = [];
@@ -214,7 +249,7 @@ export default {
               type: "success",
             });
             if (result.data.data != "") {
-              this.programInfo.programId = result.data.data;//如果保存后有了programId，会自动绑定，下次请求时会自动带上
+              this.programInfo.programId = result.data.data; //如果保存后有了programId，会自动绑定，下次请求时会自动带上
               this.canDelete = result.data.data != ""; //保存后就可以删除了
             }
           } else if (status == 401) {
@@ -337,5 +372,8 @@ a {
   border: 10px solid white;
 
   left: 50%;
+}
+.el-option{
+  width: 5px;
 }
 </style>

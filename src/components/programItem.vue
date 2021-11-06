@@ -2,6 +2,7 @@
   <el-card class="box-card">
     <div slot="header" class="clearfix">
       <span>{{ info.title }}</span>
+      
       <el-button
         style="float: right; padding: 3px 0"
         type="info"
@@ -9,12 +10,16 @@
         >打开详情</el-button
       >
     </div>
+    <span>支持语言：</span></span>
+    <div class="languageList" v-for="key,value in info.codeMap">
+     <el-tag class="languageTag"  type="success">{{value}}</el-tag> 
+    </div>
+    <br>
+    <br>
     <div class="text item">
       {{ "作者： " + info.createrName }}
     </div>
-    <div class="text item">
-      {{ "编程语言：" + info.language }}
-    </div>
+  
     <div class="text item">
       {{ "内容：" + getContentAbstract(info.content)}}
     </div>
@@ -27,6 +32,7 @@ export default {
       programInfo: {
         programId: "022021110300019",
         language: "java",
+        codeMap:"",
         createrId: localStorage.getItem("userid"),
         title: "前n项和",
         content: "wdefghhgfdsadfghnjhfd",
@@ -88,4 +94,13 @@ h2 {
   border: 10px solid tan;
   height: 200px;
 }
+.languageList{
+    display: inline-block;
+  position:relative;
+}
+.languageTag{
+  float: left;
+  position:inherit;
+}
+
 </style>
