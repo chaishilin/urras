@@ -11,9 +11,12 @@
       >
     </div>
     <span>支持语言：</span></span>
-    <div class="languageList" v-for="key,value in info.codeMap">
+    <div class="languageList" v-if="info.codeMap != null" > 
+    <div class="languageList"  v-for="key,value in info.codeMap">
      <el-tag class="languageTag"  type="success">{{value}}</el-tag> 
     </div>
+     </div>
+    <div class="languageList" v-else><el-tag type="warning">无</el-tag></div>
     <br>
     <br>
     <div class="text item">
@@ -32,7 +35,7 @@ export default {
       programInfo: {
         programId: "022021110300019",
         language: "java",
-        codeMap:"",
+        codeMap: "",
         createrId: localStorage.getItem("userid"),
         title: "前n项和",
         content: "wdefghhgfdsadfghnjhfd",
@@ -45,6 +48,7 @@ export default {
   props: {
     info: this.programInfo, //programInfo是默认值，vue组件的传参
   },
+
   methods: {
     loadDetail(programId) {
       console.log(programId);
@@ -53,14 +57,14 @@ export default {
         query: { programId: programId },
       });
     },
-    getContentAbstract(content){
-      var result = content.replace(/<[^>]+>/g,"");
-      if(result.length > 10){
-        return result.substring(0,20) + "...";
-      }else{
+    getContentAbstract(content) {
+      var result = content.replace(/<[^>]+>/g, "");
+      if (result.length > 10) {
+        return result.substring(0, 20) + "...";
+      } else {
         return result;
       }
-    }
+    },
   },
 };
 </script>
@@ -94,13 +98,12 @@ h2 {
   border: 10px solid tan;
   height: 200px;
 }
-.languageList{
-    display: inline-block;
-  position:relative;
+.languageList {
+  display: inline-block;
+  position: relative;
 }
-.languageTag{
+.languageTag {
   float: left;
-  position:inherit;
+  position: inherit;
 }
-
 </style>

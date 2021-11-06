@@ -23,7 +23,12 @@
         placeholder="接口输入"
       ></el-input>
       <br />
-      <el-select v-model="programInfo.language" placeholder="请选择" @change="chooseLanguage" filterable>
+      <el-select
+        v-model="programInfo.language"
+        placeholder="请选择"
+        @change="chooseLanguage"
+        filterable
+      >
         <el-option
           v-for="item in supportLanguageList"
           :key="item"
@@ -36,7 +41,7 @@
         class="code-mirror"
         v-model:value="programInfo.code"
         :options="cmOptions"
-        :onChange="haha()"
+        :onChange="saveContent()"
       >
       </codemirror>
       <el-button type="primary" @click="runCode" v-loading="getOutput"
@@ -94,12 +99,14 @@ export default {
       getOutput: false,
       getSave: false,
       canDelete: false,
-      supportLanguageList:[],
+      supportLanguageList: [],
+      code: "public int yourFunction(int a,int b){\n        //示例：~求数字区间[a,b]的和\n        int sum = 0;\n        for(int i = a;i<=b;i++){\n            sum += i;\n        }\n        return sum;\n    }\n",
+      language: "java",
       editorOption: {},
       programInfo: {
-        language: "java",
-        codeMap:{},
-        code: "public int yourFunction(int a,int b){\n        //示例：求数字区间[a,b]的和\n        int sum = 0;\n        for(int i = a;i<=b;i++){\n            sum += i;\n        }\n        return sum;\n    }\n",
+        language: "",
+        codeMap: {},
+        code: "",
         createrId: localStorage.getItem("userid"),
         title: "这是个模板",
         content: "输入接口描述...",
@@ -140,7 +147,7 @@ export default {
   },
   mounted() {
     if (this.$route.query.hasOwnProperty("programId")) {
-      //console.log(this.$route.query.programId);
+      //如果是带参数跳转过来的;
       this.canDelete = true; //如果有programId 那么当然是可以删除的
       let newProgramInfo = {
         programId: this.$route.query.programId,
@@ -154,12 +161,19 @@ export default {
           if (status == 200) {
             if (result.data.data.length != 0) {
               this.programInfo = result.data.data[0];
-              for(let item in this.programInfo.codeMap){
-                this.programInfo.language = item;
-                this.programInfo.code = this.programInfo.codeMap[item];
-                break;//选择第一个支持的语言
-              }
-              
+              //如果不是空模板
+              if (this.programInfo.codeMap != null) {
+                for (let item in this.programInfo.codeMap) {
+                  this.programInfo.language = item;
+                  this.programInfo.code = this.programInfo.codeMap[item];
+                  break; //选择第一个支持的语言
+                }
+              } else {
+                this.programInfo["codeMap"] = {};
+                this.programInfo.language = this.language;
+                this.programInfo.code = "\n\n\n";//如果是保存的空模板，那就必须要手动传个空字符，否则codemirror会报错
+                //因为code字段在空模板中为null
+             }
             }
           } else if (status == 401) {
             this.$message.error("请先登录");
@@ -177,6 +191,10 @@ export default {
         .finally(() => {
           this.getOutput = false;
         });
+    } else {
+      //如果是新建页面过来的
+      this.programInfo.language = this.language;
+      this.programInfo.code = this.code;
     }
     this.$store
       .dispatch("SupportLanguageList")
@@ -189,17 +207,20 @@ export default {
       });
   },
   methods: {
-    haha(){
-      console.log('gaga')
-      console.log(this.programInfo.code) 
-      this.programInfo.codeMap[this.programInfo.language] = this.programInfo.code
+    saveContent() {
+      if (this.programInfo.language != null) {
+        this.programInfo.codeMap[this.programInfo.language] =
+          this.programInfo.code;
+      }
     },
-    chooseLanguage(){ 
-      if(this.programInfo.codeMap.hasOwnProperty(this.programInfo.language)){
+    chooseLanguage() {
+      console.log(this.programInfo);
+      if (this.programInfo.codeMap.hasOwnProperty(this.programInfo.language)) {
         //如果该接口的选中语言内容不为空，则填补该语言代码
-      this.programInfo.code=this.programInfo.codeMap[this.programInfo.language];
-      }else{
-        this.programInfo.code="\n\n\n";
+        this.programInfo.code =
+          this.programInfo.codeMap[this.programInfo.language];
+      } else {
+        this.programInfo.code = "\n\n\n";
       }
     },
     runCode() {
@@ -373,7 +394,7 @@ a {
 
   left: 50%;
 }
-.el-option{
+.el-option {
   width: 5px;
 }
 </style>
