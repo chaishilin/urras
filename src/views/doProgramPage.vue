@@ -5,7 +5,10 @@
       <div>
         <span>接口标题</span>
         <el-input v-model="programInfo.title" placeholder="接口标题"></el-input>
+        <span>是否公开</span>
+        <el-switch v-model="isPublic"></el-switch>
       </div>
+      
       <div>
         <quill-editor
           ref="myTextEditor"
@@ -96,6 +99,7 @@ require("codemirror/mode/clike/clike.js");
 export default {
   data() {
     return {
+      isPublic:false,
       getOutput: false,
       getSave: false,
       canDelete: false,
@@ -161,6 +165,9 @@ export default {
           if (status == 200) {
             if (result.data.data.length != 0) {
               this.programInfo = result.data.data[0];
+              if(this.programInfo.publicState == "01"){
+                this.isPublic = true;
+              }
               //如果不是空模板
               if (this.programInfo.codeMap != null) {
                 for (let item in this.programInfo.codeMap) {
@@ -171,9 +178,9 @@ export default {
               } else {
                 this.programInfo["codeMap"] = {};
                 this.programInfo.language = this.language;
-                this.programInfo.code = "\n\n\n";//如果是保存的空模板，那就必须要手动传个空字符，否则codemirror会报错
+                this.programInfo.code = "\n\n\n"; //如果是保存的空模板，那就必须要手动传个空字符，否则codemirror会报错
                 //因为code字段在空模板中为null
-             }
+              }
             }
           } else if (status == 401) {
             this.$message.error("请先登录");
@@ -259,6 +266,11 @@ export default {
     saveCode() {
       this.getSave = true;
       this.programInfo.outputList = [];
+      if(this.isPublic == true){
+        this.programInfo.publicState = "01"
+      }else{
+        this.programInfo.publicState = "00"
+      }
       this.$store
         .dispatch("SaveProgram", this.programInfo)
         .then((result) => {

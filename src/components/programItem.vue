@@ -1,8 +1,9 @@
 <template>
-  <el-card class="box-card">
+  <el-card class="box-card" shadow="hover">
     <div slot="header" class="clearfix">
       <span>{{ info.title }}</span>
-      
+       <el-tag v-if="info.publicState == '01'">公开</el-tag>
+    <el-tag type="danger" v-else>仅自己可见</el-tag>
       <el-button
         style="float: right; padding: 3px 0"
         type="info"
@@ -10,6 +11,7 @@
         >打开详情</el-button
       >
     </div>
+   
     <span>支持语言：</span></span>
     <div class="languageList" v-if="info.codeMap != null" > 
     <div class="languageList"  v-for="key,value in info.codeMap">
@@ -26,9 +28,16 @@
     <div class="text item">
       {{ "内容：" + getContentAbstract(info.content)}}
     </div>
+    <div class="text item">
+      {{ "创建时间：" + getFormatDate(info.createTime)}}
+    </div>
+    <div class="text item">
+      {{ "上次修改时间：" + getFormatDate(info.lastModifiedTime)}}
+    </div>
   </el-card>
 </template>
 <script>
+import Date from "@/utils/date";
 export default {
   data() {
     return {
@@ -41,7 +50,7 @@ export default {
         content: "wdefghhgfdsadfghnjhfd",
         state: "",
         publicState: "",
-        createrName: "(*^_^*)",
+        createrName: "",
       },
     };
   },
@@ -57,7 +66,17 @@ export default {
         query: { programId: programId },
       });
     },
+    getFormatDate(date) {
+      if (date != "") {
+        console.log(date);
+        var dateTime = new Date(date);
+        console.log(typeof dateTime);
+        return dateTime.format("yyyy-MM-dd hh:mm:ss");
+      }
+    },
     getContentAbstract(content) {
+      var createTime = new Date(this.info.createTime);
+      console.log(createTime.format("yyyy-MM-dd hh:mm:ss"));
       var result = content.replace(/<[^>]+>/g, "");
       if (result.length > 10) {
         return result.substring(0, 20) + "...";
@@ -96,7 +115,7 @@ h2 {
   width: 50ch;
   float: left;
   border: 10px solid tan;
-  height: 200px;
+  height: 300px;
 }
 .languageList {
   display: inline-block;
