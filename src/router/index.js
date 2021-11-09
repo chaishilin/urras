@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+const includPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return includPush.call(this, location).catch(err => err)
+}
 Vue.use(VueRouter)
 export const constantRouterMap = [
   { path: '/', component: () => import('@/views/login') },
@@ -11,9 +14,9 @@ export const constantRouterMap = [
   { path: '/programItem', component: () => import('@/components/programItem') },
   { path: '/labelBar', component: () => import('@/components/labelBar') },
   { path: '/register', component: () => import('@/views/register') },
-  { path: '/resetPassword', component:() => import('@/views/resetPassword')},
+  { path: '/resetPassword', component: () => import('@/views/resetPassword') },
 
-{ path: '/appHeader', component: () => import('@/components/appHeader') }
+  { path: '/appHeader', component: () => import('@/components/appHeader') }
 
 
 ]

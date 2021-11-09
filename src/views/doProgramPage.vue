@@ -8,7 +8,7 @@
         <span>是否公开</span>
         <el-switch v-model="isPublic"></el-switch>
       </div>
-      
+
       <div>
         <quill-editor
           ref="myTextEditor"
@@ -52,10 +52,24 @@
       >
       <el-button type="primary" @click="saveCode" v-loading="getSave"
         >保存</el-button
-      ><el-button type="primary" @click="programList">返回</el-button
-      ><el-button type="primary" @click="deleteProgram" v-if="canDelete"
-        >删除</el-button
-      >
+      ><el-button type="primary" @click="programList">返回</el-button>
+      <el-popover placement="top" width="160" v-model="visible">
+        <p>确定删除吗？</p>
+        <div style="text-align: right; margin: 0">
+          <el-button size="mini" type="text" @click="visible = false"
+            >取消</el-button
+          >
+          <el-button
+            type="primary"
+            size="mini"
+            @click="deleteProgram"
+            v-if="canDelete"
+            >确定</el-button
+          >
+        </div>
+        <el-button slot="reference" type="primary">删除</el-button>
+      </el-popover>
+      <el-button type="primary" @click="fork()">fork</el-button>
       <br />
       <div class="output">
         <div v-if="getOutput">正在获得运行结果...</div>
@@ -99,7 +113,8 @@ require("codemirror/mode/clike/clike.js");
 export default {
   data() {
     return {
-      isPublic:false,
+      visible: false,
+      isPublic: false,
       getOutput: false,
       getSave: false,
       canDelete: false,
@@ -165,8 +180,8 @@ export default {
           if (status == 200) {
             if (result.data.data.length != 0) {
               this.programInfo = result.data.data[0];
-              console.log(this.programInfo)
-              if(this.programInfo.publicState == "01"){
+              //console.log(this.programInfo);
+              if (this.programInfo.publicState == "01") {
                 this.isPublic = true;
               }
               //如果不是空模板
@@ -263,14 +278,16 @@ export default {
           this.getOutput = false;
         });
     },
-
+    fork(){
+      this.$message('正在开发中，允许用户复制一份当前接口')
+    },
     saveCode() {
       this.getSave = true;
       this.programInfo.outputList = [];
-      if(this.isPublic == true){
-        this.programInfo.publicState = "01"
-      }else{
-        this.programInfo.publicState = "00"
+      if (this.isPublic == true) {
+        this.programInfo.publicState = "01";
+      } else {
+        this.programInfo.publicState = "00";
       }
       //this.programInfo.createrId = localStorage.getItem("userId");
       this.$store
@@ -311,7 +328,7 @@ export default {
       });
     },
     deleteProgram() {
-      this.getSave = true;
+      this.visible = false;
       this.programInfo.outputList = [];
       this.$store
         .dispatch("DeleteProgram", this.programInfo)
