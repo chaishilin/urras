@@ -6,7 +6,7 @@
       mode="horizontal"
       @select="handleSelect"
     >
-      <el-menu-item index="index" disabled><span style="font-size: 20px">首页</span></el-menu-item>
+      <el-menu-item index="index"><span style="font-size: 20px">首页</span></el-menu-item>
       <el-menu-item index="programList"><span style="font-size: 20px">程序清单</span></el-menu-item>
       <el-submenu index="user" class="user">
         <template slot="title">
@@ -34,6 +34,11 @@ export default {
         this.$router.push({
           path: "/programListPage",
         });
+      }else if(key == "index"){
+        this.$router.push({
+          path: "/publicPage",
+        });
+
       } else if (key == "logout") {
         this.$store
           .dispatch("UserLogout")

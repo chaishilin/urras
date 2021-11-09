@@ -43,3 +43,10 @@ export function supportLanguageList() {
     })
 }
 
+export function publicProgramList() {
+    //系统支持的编程语言
+    return request({
+        url: '/publicProgramList',
+        method: 'get'
+    })
+}
