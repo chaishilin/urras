@@ -7,8 +7,6 @@ export const constantRouterMap = [
   { path: '/userInfo', component: () => import('@/views/userInfo') },
   { path: '/programListPage', component: () => import('@/views/programListPage') },
   { path: '/doProgramPage', component: () => import('@/views/doProgramPage') },
-  { path: '/publicPage', component:() => import('@/views/publicPage')},
-
   { path: '/programList', component: () => import('@/components/programList') },
   { path: '/programItem', component: () => import('@/components/programItem') },
   { path: '/labelBar', component: () => import('@/components/labelBar') },

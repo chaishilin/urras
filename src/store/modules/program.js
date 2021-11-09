@@ -37,22 +37,11 @@ const program = {
                 });
             })
         },
-        //获得公共程序列表
-        PublicProgramList({ commit }) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
-            return new Promise((resolve, reject) => {
-                //封装一个promise
-                publicProgramList().then((responce) => {
-                    resolve(responce)//将结果封装进resolve
-                }).catch((err) => {
-                    reject(err)
-                });
-            })
-        },
         //删除程序
-        DeleteProgram({ commit }, programId) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
+        DeleteProgram({ commit }, programInfo) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
             return new Promise((resolve, reject) => {
                 //封装一个promise
-                deleteProgram(programId).then((responce) => {
+                deleteProgram(programInfo).then((responce) => {
                     resolve(responce)//将结果封装进resolve
                 }).catch((err) => {
                     reject(err)

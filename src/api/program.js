@@ -24,14 +24,12 @@ export function programList(params) {
     })
 }
 
-export function deleteProgram(programId) {
+export function deleteProgram(params) {
     //删除程序
     return request({
         url: '/deleteProgram',
         method: 'post',
-        data: {
-            programId,
-        },
+        data: params,
     })
 }
 
@@ -39,14 +37,6 @@ export function supportLanguageList() {
     //系统支持的编程语言
     return request({
         url: '/supportLanguageList',
-        method: 'get'
-    })
-}
-
-export function publicProgramList() {
-    //系统支持的编程语言
-    return request({
-        url: '/publicProgramList',
         method: 'get'
     })
 }

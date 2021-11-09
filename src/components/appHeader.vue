@@ -29,16 +29,16 @@ export default {
   },
   methods: {
     handleSelect(key, keyPath) {
-      console.log(key, keyPath);
+      //console.log(key, keyPath);
       if (key == "programList") {
         this.$router.push({
           path: "/programListPage",
         });
       }else if(key == "index"){
         this.$router.push({
-          path: "/publicPage",
+          path: "/programListPage",
+          query: { userId: "public" },
         });
-
       } else if (key == "logout") {
         this.$store
           .dispatch("UserLogout")

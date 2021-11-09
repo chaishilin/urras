@@ -60,7 +60,7 @@ export default {
 
   methods: {
     loadDetail(programId) {
-      console.log(programId);
+      //console.log(programId);
       this.$router.push({
         path: "/doProgramPage",
         query: { programId: programId },
@@ -68,15 +68,13 @@ export default {
     },
     getFormatDate(date) {
       if (date != "") {
-        console.log(date);
+        //console.log(date);
         var dateTime = new Date(date);
-        console.log(typeof dateTime);
+        //console.log(typeof dateTime);
         return dateTime.format("yyyy-MM-dd hh:mm:ss");
       }
     },
     getContentAbstract(content) {
-      var createTime = new Date(this.info.createTime);
-      console.log(createTime.format("yyyy-MM-dd hh:mm:ss"));
       var result = content.replace(/<[^>]+>/g, "");
       if (result.length > 10) {
         return result.substring(0, 20) + "...";

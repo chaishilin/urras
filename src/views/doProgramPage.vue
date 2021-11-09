@@ -111,7 +111,7 @@ export default {
         language: "",
         codeMap: {},
         code: "",
-        createrId: localStorage.getItem("userid"),
+        createrId: "",
         title: "这是个模板",
         content: "输入接口描述...",
         state: "",
@@ -165,6 +165,7 @@ export default {
           if (status == 200) {
             if (result.data.data.length != 0) {
               this.programInfo = result.data.data[0];
+              console.log(this.programInfo)
               if(this.programInfo.publicState == "01"){
                 this.isPublic = true;
               }
@@ -271,6 +272,7 @@ export default {
       }else{
         this.programInfo.publicState = "00"
       }
+      //this.programInfo.createrId = localStorage.getItem("userId");
       this.$store
         .dispatch("SaveProgram", this.programInfo)
         .then((result) => {
@@ -291,7 +293,7 @@ export default {
               path: "/",
             });
           } else {
-            this.$message.error("调用失败 " + result.data.msg);
+            this.$message.error(result.data.msg);
           }
         })
         .catch((err) => {
@@ -312,7 +314,7 @@ export default {
       this.getSave = true;
       this.programInfo.outputList = [];
       this.$store
-        .dispatch("DeleteProgram", this.programInfo.programId)
+        .dispatch("DeleteProgram", this.programInfo)
         .then((result) => {
           let status = result.data.code;
           console.log(result.data);
