@@ -104,7 +104,7 @@ export default {
       getSave: false,
       canDelete: false,
       supportLanguageList: [],
-      code: "public int yourFunction(int a,int b){\n        //示例：~求数字区间[a,b]的和\n        int sum = 0;\n        for(int i = a;i<=b;i++){\n            sum += i;\n        }\n        return sum;\n    }\n",
+      code: "public int yourFunction(int a,int b){\n        int sum = 0;\n        for(int i = a;i<=b;i++){\n            sum += i;\n        }\n        return sum;\n    }\n",
       language: "java",
       editorOption: {},
       programInfo: {
