@@ -170,7 +170,6 @@ export default {
       this.canDelete = true; //如果有programId 那么当然是可以删除的
       let newProgramInfo = {
         programId: this.$route.query.programId,
-        createrId: localStorage.getItem("userId"),
       };
       this.$store
         .dispatch("ProgramList", newProgramInfo)
@@ -289,7 +288,11 @@ export default {
       } else {
         this.programInfo.publicState = "00";
       }
-      //this.programInfo.createrId = localStorage.getItem("userId");
+      if(this.programInfo.createrId == "" || this.programInfo.createrId == null){
+        this.programInfo.createrId = localStorage.getItem("userId");
+      }else{
+        //否则，为原有的创建人
+      }
       this.$store
         .dispatch("SaveProgram", this.programInfo)
         .then((result) => {
