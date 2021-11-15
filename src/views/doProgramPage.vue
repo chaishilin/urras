@@ -279,6 +279,47 @@ export default {
     },
     fork(){
       this.$message('正在开发中，允许用户复制一份当前接口')
+            this.getSave = true;
+      this.programInfo.outputList = [];
+      if (this.isPublic == true) {
+        this.programInfo.publicState = "01";
+      } else {
+        this.programInfo.publicState = "00";
+      }
+      //指定该程序的创建人为当前用户
+      let programForkInfo = this.programInfo;
+      programForkInfo.programId = null;
+      programForkInfo.createrId = localStorage.getItem("userId");
+      this.$store
+        .dispatch("SaveProgram", programForkInfo)
+        .then((result) => {
+          let status = result.data.code;
+          console.log(result.data);
+          if (status == 200) {
+            this.$message({
+              message: result.data.msg,
+              type: "success",
+            });
+            if (result.data.data != "") {
+              this.programInfo.programId = result.data.data; //如果保存后有了programId，会自动绑定，下次请求时会自动带上
+              this.canDelete = result.data.data != ""; //保存后就可以删除了
+            }
+          } else if (status == 401) {
+            this.$message.error("请先登录");
+            this.$router.push({
+              path: "/",
+            });
+          } else {
+            this.$message.error(result.data.msg);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          return false;
+        })
+        .finally(() => {
+          this.getSave = false;
+        });
     },
     saveCode() {
       this.getSave = true;
