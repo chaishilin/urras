@@ -1,58 +1,45 @@
 <template>
-  <div class="doProgram">
+  <div class="programTemplateDetail">
     <AppHeader></AppHeader>
     <div class="left-box">
       <div>
-        <span>接口标题</span>
-        <el-input v-model="programInfo.title" placeholder="接口标题"></el-input>
-        <span>是否公开</span>
+        <span>程序模板标题</span>
+        <el-input v-model="programTemplateInfo.title" placeholder="接口标题"></el-input>
+        <span>是否使用</span>
         <el-switch v-model="isPublic"></el-switch>
       </div>
 
       <div>
         <quill-editor
           ref="myTextEditor"
-          v-model="programInfo.content"
+          v-model="programTemplateInfo.content"
           :options="editorOption"
           style="height: 600px; margin-bottom: 10px"
         ></quill-editor>
       </div>
     </div>
     <div class="right-box">
-      <span>接口输入</span>
+      <span>编程语言类型</span>
+      <!-- 这里搞成能输入新增也能列表查询的那种 -->
       <el-input
         class="el-input"
-        v-model="programInfo.input"
-        placeholder="接口输入"
+        v-model="programTemplateInfo.language"
+        placeholder="编程语言类型"
       ></el-input>
-      <br />
-      <el-select
-        v-model="programInfo.language"
-        placeholder="请选择"
-        @change="chooseLanguage"
-        filterable
-      >
-        <el-option
-          v-for="item in supportLanguageList"
-          :key="item"
-          :label="item"
-          :value="item"
-        >
-        </el-option>
-      </el-select>
+      <br/>
+
       <codemirror
         class="code-mirror"
-        v-model:value="programInfo.code"
+        v-model:value="programTemplateInfo.code"
         :options="cmOptions"
-        :onChange="saveContent()"
       >
       </codemirror>
-      <el-button type="primary" @click="runCode" v-loading="getOutput"
-        >运行</el-button
+       <el-button type="primary" @click="runTemplate" v-loading="getOutput"
+        >测试模板</el-button
       >
       <el-button type="primary" @click="saveCode" v-loading="getSave"
         >保存</el-button
-      ><el-button type="primary" @click="programList">返回</el-button>
+      ><el-button type="primary" @click="programTemplateList">返回</el-button>
       <el-popover placement="top" width="160" v-model="visible">
         <p>确定删除吗？</p>
         <div style="text-align: right; margin: 0">
@@ -72,8 +59,8 @@
       <el-button type="primary" @click="fork()">fork</el-button>
       <br />
       <div class="output">
-        <div v-if="getOutput">正在获得运行结果...</div>
-        <div v-for="item in programInfo.outputList">
+        <div v-if="getOutput">正在获得测试结果...</div>
+        <div v-for="item in programTemplateInfo.outputList">
           <div v-if="item != ''">{{ item }}</div>
         </div>
       </div>
@@ -93,7 +80,7 @@ import "codemirror/mode/javascript/javascript.js";
 import "codemirror/theme/dracula.css";
 //编辑器代码高亮css文件
 import "codemirror/addon/hint/show-hint.css";
-import appHeader from "../components/appHeader.vue";
+import appHeader from "../../components/appHeader.vue";
 //代码折叠文件
 require("codemirror/addon/fold/foldcode.js");
 require("codemirror/addon/fold/foldgutter.js");
@@ -119,21 +106,18 @@ export default {
       getSave: false,
       canDelete: false,
       supportLanguageList: [],
-      code: "public int yourFunction(int a,int b){\n        int sum = 0;\n        for(int i = a;i<=b;i++){\n            sum += i;\n        }\n        return sum;\n    }\n",
+      code: "nothing",
       language: "java",
       editorOption: {},
-      programInfo: {
+      programTemplateInfo: {
         language: "",
-        codeMap: {},
         code: "",
         createrId: "",
         title: "这是个模板",
         content: "输入接口描述...",
         state: "",
         publicState: "",
-        input: "1 10",
-        output: "",
-        outputList: [],
+        input: "1 10"
       },
       info: "",
       cmOptions: {
@@ -165,36 +149,24 @@ export default {
     AppHeader,
   },
   mounted() {
-    if (this.$route.query.hasOwnProperty("programId")) {
+    if (this.$route.query.hasOwnProperty("templateId")) {
       //如果是带参数跳转过来的;
-      this.canDelete = true; //如果有programId 那么当然是可以删除的
-      let newProgramInfo = {
-        programId: this.$route.query.programId,
+      this.canDelete = true; //如果有tempalteId 那么当然是可以删除的
+      let newProgramTemplateInfo = {
+        tempalteId: this.$route.query.tempalteId,
       };
       this.$store
-        .dispatch("ProgramList", newProgramInfo)
+        .dispatch("ProgramTemplateList", newProgramTemplateInfo)
         .then((result) => {
+          console.log("gaga")
+          console.log(this.programTemplateInfo)
           let status = result.data.code;
-          //console.log(result.data);
+          
           if (status == 200) {
             if (result.data.data.length != 0) {
-              this.programInfo = result.data.data[0];
-              //console.log(this.programInfo);
-              if (this.programInfo.publicState == "01") {
+              this.programTemplateInfo = result.data.data[0];
+              if (this.programTemplateInfo.publicState == "01") {
                 this.isPublic = true;
-              }
-              //如果不是空模板
-              if (this.programInfo.codeMap != null) {
-                for (let item in this.programInfo.codeMap) {
-                  this.programInfo.language = item;
-                  this.programInfo.code = this.programInfo.codeMap[item];
-                  break; //选择第一个支持的语言
-                }
-              } else {
-                this.programInfo["codeMap"] = {};
-                this.programInfo.language = this.language;
-                this.programInfo.code = "\n\n\n"; //如果是保存的空模板，那就必须要手动传个空字符，否则codemirror会报错
-                //因为code字段在空模板中为null
               }
             }
           } else if (status == 401) {
@@ -212,44 +184,22 @@ export default {
         })
         .finally(() => {
           this.getOutput = false;
+  
         });
     } else {
       //如果是新建页面过来的
-      this.programInfo.language = this.language;
-      this.programInfo.code = this.code;
+      this.programTemplateInfo.language = this.language;
+      this.programTemplateInfo.code = this.code;
     }
-    this.$store
-      .dispatch("SupportLanguageList")
-      .then((result) => {
-        this.supportLanguageList = result.data.data;
-      })
-      .catch((err) => {
-        console.log(err);
-        return false;
-      });
+      
+    
   },
   methods: {
-    saveContent() {
-      if (this.programInfo.language != null) {
-        this.programInfo.codeMap[this.programInfo.language] =
-          this.programInfo.code;
-      }
-    },
-    chooseLanguage() {
-      console.log(this.programInfo);
-      if (this.programInfo.codeMap.hasOwnProperty(this.programInfo.language)) {
-        //如果该接口的选中语言内容不为空，则填补该语言代码
-        this.programInfo.code =
-          this.programInfo.codeMap[this.programInfo.language];
-      } else {
-        this.programInfo.code = "\n\n\n";
-      }
-    },
     runCode() {
       this.getOutput = true;
-      this.programInfo.outputList = [];
+      this.programTemplateInfo.outputList = [];
       this.$store
-        .dispatch("DoProgram", this.programInfo)
+        .dispatch("DoProgram", this.programTemplateInfo)
         .then((result) => {
           let status = result.data.code;
           console.log(result.data);
@@ -258,8 +208,8 @@ export default {
               message: "调用成功",
               type: "success",
             });
-            this.programInfo.output = result.data.data.result;
-            this.programInfo.outputList = this.programInfo.output.split("\n");
+            this.programTemplateInfo.output = result.data.data.result;
+            this.programTemplateInfo.outputList = this.programTemplateInfo.output.split("\n");
           } else if (status == 401) {
             this.$message.error("请先登录");
             this.$router.push({
@@ -278,20 +228,20 @@ export default {
         });
     },
     fork(){
-      this.$message('正在保存当前接口到用户个人列表')
+      this.$message('正在保存当前模板到用户个人列表')
       this.getSave = true;
-      this.programInfo.outputList = [];
+      this.programTemplateInfo.outputList = [];
       if (this.isPublic == true) {
-        this.programInfo.publicState = "01";
+        this.programTemplateInfo.publicState = "01";
       } else {
-        this.programInfo.publicState = "00";
+        this.programTemplateInfo.publicState = "00";
       }
       //指定该程序的创建人为当前用户
-      let programForkInfo = this.programInfo;
-      programForkInfo.programId = null;
-      programForkInfo.createrId = localStorage.getItem("userId");
+      let forkInfo = this.programTemplateInfo;
+      forkInfo.templateId = null;
+      forkInfo.createrId = localStorage.getItem("userId");
       this.$store
-        .dispatch("SaveProgram", programForkInfo)
+        .dispatch("SaveProgramTemplate", forkInfo)
         .then((result) => {
           let status = result.data.code;
           console.log(result.data);
@@ -301,7 +251,7 @@ export default {
               type: "success",
             });
             if (result.data.data != "") {
-              this.programInfo.programId = result.data.data; //如果保存后有了programId，会自动绑定，下次请求时会自动带上
+              this.programTemplateInfo.programId = result.data.data; //如果保存后有了programId，会自动绑定，下次请求时会自动带上
               this.canDelete = result.data.data != ""; //保存后就可以删除了
             }
           } else if (status == 401) {
@@ -323,19 +273,19 @@ export default {
     },
     saveCode() {
       this.getSave = true;
-      this.programInfo.outputList = [];
+      this.programTemplateInfo.outputList = [];
       if (this.isPublic == true) {
-        this.programInfo.publicState = "01";
+        this.programTemplateInfo.publicState = "01";
       } else {
-        this.programInfo.publicState = "00";
+        this.programTemplateInfo.publicState = "00";
       }
-      if(this.programInfo.createrId == "" || this.programInfo.createrId == null){
-        this.programInfo.createrId = localStorage.getItem("userId");
+      if(this.programTemplateInfo.createrId == "" || this.programTemplateInfo.createrId == null){
+        this.programTemplateInfo.createrId = localStorage.getItem("userId");
       }else{
         //否则，为原有的创建人
       }
       this.$store
-        .dispatch("SaveProgram", this.programInfo)
+        .dispatch("SaveProgramTemplate", this.programTemplateInfo)
         .then((result) => {
           let status = result.data.code;
           console.log(result.data);
@@ -345,7 +295,7 @@ export default {
               type: "success",
             });
             if (result.data.data != "") {
-              this.programInfo.programId = result.data.data; //如果保存后有了programId，会自动绑定，下次请求时会自动带上
+              this.programTemplateInfo.tempalteId = result.data.data; //如果保存后有了programId，会自动绑定，下次请求时会自动带上
               this.canDelete = result.data.data != ""; //保存后就可以删除了
             }
           } else if (status == 401) {
@@ -358,7 +308,6 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
           return false;
         })
         .finally(() => {
@@ -366,16 +315,16 @@ export default {
         });
     },
 
-    programList() {
+    programTemplateList() {
       this.$router.push({
-        path: "/programListPage",
+        path: "/programTemplateListPage",
       });
     },
     deleteProgram() {
       this.visible = false;
-      this.programInfo.outputList = [];
+      this.programTemplateInfo.outputList = [];
       this.$store
-        .dispatch("DeleteProgram", this.programInfo)
+        .dispatch("DeleteProgramTemplate", this.programTemplateInfo)
         .then((result) => {
           let status = result.data.code;
           console.log(result.data);
@@ -384,7 +333,7 @@ export default {
               message: "删除成功",
               type: "success",
             });
-            this.programList();
+            this.programTemplateList();
           } else if (status == 401) {
             this.$message.error("请先登录");
             this.$router.push({
@@ -402,6 +351,12 @@ export default {
           this.getSave = false;
         });
     },
+    runTemplate(){
+      this.$message({
+              message: "正在开发中~",
+              type: "info",
+            });
+    }
   },
 };
 </script>

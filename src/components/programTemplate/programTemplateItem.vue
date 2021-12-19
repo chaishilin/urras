@@ -1,39 +1,45 @@
 <template>
-  <!-- 每个程序的标签 -->
+  <!-- 每个程序模板的标签 -->
   <el-card class="box-card" shadow="hover">
     <div slot="header" class="clearfix">
       <span>{{ info.title }}</span>
-       <el-tag v-if="info.publicState == '01'">公开</el-tag>
-    <el-tag type="danger" v-else>仅自己可见</el-tag>
+      <el-tag v-if="info.publicState == '01'">使用中</el-tag>
+      <el-tag type="danger" v-else>未使用</el-tag>
       <el-button
         style="float: right; padding: 3px 0"
         type="info"
-        @click="loadDetail(info.programId)"
+        @click="loadTemplateDetail(info.templateId)"
         >打开详情</el-button
       >
     </div>
-   
-    <span>支持语言：</span></span>
-    <div class="languageList" v-if="info.codeMap != null" > 
-    <div class="languageList"  v-for="key,value in info.codeMap">
-     <el-tag class="languageTag"  type="success">{{value}}</el-tag> 
+
+    <div
+      class="language"
+      v-if="info.language != null && info.language != ''"
+    >
+      <div class="text item">
+        语言：<el-tag type="success">{{ info.language }}</el-tag>
+      </div>
     </div>
-     </div>
-    <div class="languageList" v-else><el-tag type="warning">无</el-tag></div>
-    <br>
-    <br>
+    <div class="language" v-else>
+      语言：<el-tag type="warning">无</el-tag>
+    </div>
+    <br />
+    <br />
     <div class="text item">
       {{ "作者： " + info.createrName }}
     </div>
-  
+
     <div class="text item">
       {{ "内容：" + getContentAbstract(info.content)}}
     </div>
+
     <div class="text item">
-      {{ "创建时间：" + getFormatDate(info.createTime)}}
+      {{ "创建时间：" + getFormatDate(info.createTime) }}
     </div>
+
     <div class="text item">
-      {{ "上次修改时间：" + getFormatDate(info.lastModifiedTime)}}
+      {{ "上次修改时间：" + getFormatDate(info.lastModifiedTime) }}
     </div>
   </el-card>
 </template>
@@ -43,28 +49,27 @@ export default {
   data() {
     return {
       programInfo: {
-        programId: "022021110300019",
+        templateId: "~~",
         language: "java",
-        codeMap: "",
         createrId: localStorage.getItem("userid"),
-        title: "前n项和",
-        content: "wdefghhgfdsadfghnjhfd",
+        content: "前n项和",
+        template: "wdefghhgfdsadfghnjhfd",
         state: "",
-        publicState: "",
+        version: "",
         createrName: "",
       },
     };
   },
   props: {
-    info: this.programInfo, //programInfo是默认值，vue组件的传参
+    info: this.prograTemplate, //programInfo是默认值，vue组件的传参
   },
 
   methods: {
-    loadDetail(programId) {
-      //console.log(programId);
+    loadTemplateDetail(templateId) {
+      console.log(templateId);
       this.$router.push({
-        path: "/doProgramPage",
-        query: { programId: programId },
+        path: "/programTemplateDetail",
+        query: { templateId: templateId },
       });
     },
     getFormatDate(date) {
@@ -116,7 +121,7 @@ h2 {
   border: 10px solid tan;
   height: 300px;
 }
-.languageList {
+.language {
   display: inline-block;
   position: relative;
 }

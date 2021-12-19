@@ -8,7 +8,7 @@ export function doProgram(params) {
     })
 }
 export function saveProgram(params) {
-    //远程运行程序接口
+    //保存程序接口
     return request({
         url: '/saveProgram',
         method: 'post',
@@ -16,7 +16,7 @@ export function saveProgram(params) {
     })
 }
 export function programList(params) {
-    //远程运行程序接口
+    //查询程序列表接口
     return request({
         url: '/programList',
         method: 'post',

@@ -6,15 +6,26 @@
       mode="horizontal"
       @select="handleSelect"
     >
-      <el-menu-item index="index"><span style="font-size: 20px">首页</span></el-menu-item>
-      <el-menu-item index="programList"><span style="font-size: 20px">程序清单</span></el-menu-item>
+      <el-menu-item index="index"
+        ><span style="font-size: 20px">首页</span></el-menu-item
+      >
+      <el-menu-item index="programList"
+        ><span style="font-size: 20px">程序清单</span></el-menu-item
+      >
+      <el-menu-item index="programTemplateList"
+        ><span style="font-size: 20px">程序模板</span></el-menu-item
+      >
       <el-submenu index="user" class="user">
         <template slot="title">
           <img src="../assets/logo.png" size="30" height="30" width="30" />
-          <span>{{username}}</span>
+          <span>{{ username }}</span>
         </template>
-        <el-menu-item index="userInfo" disabled><span style="font-size: 20px">我的主页</span></el-menu-item>
-        <el-menu-item index="logout"><span style="font-size: 20px">退出</span></el-menu-item>
+        <el-menu-item index="userInfo" disabled
+          ><span style="font-size: 20px">我的主页</span></el-menu-item
+        >
+        <el-menu-item index="logout"
+          ><span style="font-size: 20px">退出</span></el-menu-item
+        >
       </el-submenu>
     </el-menu>
   </div>
@@ -24,7 +35,7 @@ export default {
   data() {
     return {
       activeIndex: "1",
-      username:localStorage.getItem("username"),
+      username: localStorage.getItem("username"),
     };
   },
   methods: {
@@ -34,7 +45,11 @@ export default {
         this.$router.push({
           path: "/programListPage",
         });
-      }else if(key == "index"){
+      } else if (key == "programTemplateList"){
+          this.$router.push({
+          path: "/programTemplateListPage",
+        });
+      } else if (key == "index") {
         this.$router.push({
           path: "/programListPage",
           query: { userId: "public" },
@@ -72,7 +87,7 @@ export default {
   position: absolute;
   right: 0px;
 };
-span{
+span {
   font-size: 100px;
   color: tan;
   border: 10px solid black;
