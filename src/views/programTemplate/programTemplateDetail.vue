@@ -4,7 +4,10 @@
     <div class="left-box">
       <div>
         <span>程序模板标题</span>
-        <el-input v-model="programTemplateInfo.title" placeholder="接口标题"></el-input>
+        <el-input
+          v-model="programTemplateInfo.title"
+          placeholder="接口标题"
+        ></el-input>
         <span>是否使用</span>
         <el-switch v-model="isPublic"></el-switch>
       </div>
@@ -26,7 +29,7 @@
         v-model="programTemplateInfo.language"
         placeholder="编程语言类型"
       ></el-input>
-      <br/>
+      <br />
 
       <codemirror
         class="code-mirror"
@@ -34,9 +37,11 @@
         :options="cmOptions"
       >
       </codemirror>
-       <el-button type="primary" @click="runTemplate" v-loading="getOutput"
+      <el-button type="primary" @click="runTemplate" v-loading="getOutput"
         >测试模板</el-button
       >
+      <br />
+      <el-button type="warning" @click="testTemplate">模板测试</el-button>
       <el-button type="primary" @click="saveCode" v-loading="getSave"
         >保存</el-button
       ><el-button type="primary" @click="programTemplateList">返回</el-button>
@@ -64,11 +69,21 @@
           <div v-if="item != ''">{{ item }}</div>
         </div>
       </div>
+      <div class="output">
+        <el-progress
+         :format="progressFormat"
+          :status="progressStatus()"
+          :text-inside="true"
+          :stroke-width="26"
+          :percentage="testRate"
+        ></el-progress>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import baseWsUrl from "../../api/baseWsUrl";
 import { codemirror } from "vue-codemirror";
 import AppHeader from "@/components/appHeader.vue";
 
@@ -80,7 +95,6 @@ import "codemirror/mode/javascript/javascript.js";
 import "codemirror/theme/dracula.css";
 //编辑器代码高亮css文件
 import "codemirror/addon/hint/show-hint.css";
-import appHeader from "../../components/appHeader.vue";
 //代码折叠文件
 require("codemirror/addon/fold/foldcode.js");
 require("codemirror/addon/fold/foldgutter.js");
@@ -100,6 +114,8 @@ require("codemirror/mode/clike/clike.js");
 export default {
   data() {
     return {
+      websock: null,
+      testRate: 0,
       visible: false,
       isPublic: false,
       getOutput: false,
@@ -117,7 +133,7 @@ export default {
         content: "输入接口描述...",
         state: "",
         publicState: "",
-        input: "1 10"
+        input: "1 10",
       },
       info: "",
       cmOptions: {
@@ -160,8 +176,7 @@ export default {
         .then((result) => {
           let status = result.data.code;
           if (status == 200) {
-             console.log("gaga")
-          console.log(result.data.data)
+      
             if (result.data.data.length != 0) {
               this.programTemplateInfo = result.data.data[0];
               if (this.programTemplateInfo.publicState == "01") {
@@ -183,19 +198,22 @@ export default {
         })
         .finally(() => {
           this.getOutput = false;
-  
         });
     } else {
       //如果是新建页面过来的
       this.programTemplateInfo.language = this.language;
       this.programTemplateInfo.template = this.template;
     }
-      
-    
+  },
+  destroyed() {
+    this.websock.close(); //离开路由之后断开websocket连接
+  },
+  created() {
+    this.initWs();
   },
   methods: {
-    fork(){
-      this.$message('正在保存当前模板到用户个人列表')
+    fork() {
+      this.$message("正在保存当前模板到用户个人列表");
       this.getSave = true;
       this.programTemplateInfo.outputList = [];
       if (this.isPublic == true) {
@@ -246,9 +264,12 @@ export default {
       } else {
         this.programTemplateInfo.publicState = "00";
       }
-      if(this.programTemplateInfo.createrId == "" || this.programTemplateInfo.createrId == null){
+      if (
+        this.programTemplateInfo.createrId == "" ||
+        this.programTemplateInfo.createrId == null
+      ) {
         this.programTemplateInfo.createrId = localStorage.getItem("userId");
-      }else{
+      } else {
         //否则，为原有的创建人
       }
       this.$store
@@ -281,7 +302,6 @@ export default {
           this.getSave = false;
         });
     },
-
     programTemplateList() {
       this.$router.push({
         path: "/programTemplateListPage",
@@ -318,7 +338,7 @@ export default {
           this.getSave = false;
         });
     },
-    runTemplate(){
+    runTemplate() {
       this.getOutput = true;
       this.$store
         .dispatch("RunProgramTemplate", this.programTemplateInfo)
@@ -330,7 +350,6 @@ export default {
               type: "success",
             });
             this.programTemplateInfo.outputList = result.data.data.split("\n");
-           
           } else if (status == 401) {
             this.$message.error("请先登录");
             this.$router.push({
@@ -346,7 +365,61 @@ export default {
         .finally(() => {
           this.getOutput = false;
         });
-    }
+    },
+    initWs() {
+      this.websock = new WebSocket(baseWsUrl);
+      this.websock.onopen = function () {
+        console.log("webSocket连接创建。。。");
+      };
+      this.websock.onmessage = this.wsOnMessage;
+      this.websock.onclose = function (e) {
+        console.log("关闭连接" + e);
+      };
+    },
+    wsOnMessage(event) {
+      var data = event.data;
+      this.testRate = Number(data);
+      
+    },
+    testTemplate() {
+      this.getOutput = true;
+      this.$store
+        .dispatch("TestProgramTemplate", this.programTemplateInfo)
+        .then((result) => {
+          let status = result.data.code;
+          if (status == 200) {
+            this.$message({
+              message: result.data.msg,
+              type: "success",
+            });
+          } else if (status == 401) {
+            this.$message.error("请先登录");
+            this.$router.push({
+              path: "/",
+            });
+          } else {
+            this.$message.error(result.data.msg);
+          }
+        })
+        .catch((err) => {
+          return false;
+        })
+        .finally(() => {
+          this.getOutput = false;
+        });
+    },
+    progressFormat(percentage){
+        return "测试进度" + percentage + "%"
+    },
+    progressStatus(){
+      if(this.testRate < 20){
+        return "exception"
+      }else if(this.testRate >= 90){
+        return "success"
+      }else{
+        return "warning"
+      }
+    },
   },
 };
 </script>

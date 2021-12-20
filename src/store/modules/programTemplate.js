@@ -1,4 +1,4 @@
-import {runProgramTemplate,updateProgramTemplate,programTemplateList,deleteProgramTemplate} from "../../api/programTemplate"
+import {testProgramTemplate,runProgramTemplate,updateProgramTemplate,programTemplateList,deleteProgramTemplate} from "../../api/programTemplate"
 
 const programTemplate = {
     actions: {
@@ -40,6 +40,17 @@ const programTemplate = {
             return new Promise((resolve, reject) => {
                 //封装一个promise
                 runProgramTemplate(programTemplateInfo).then((responce) => {
+                    resolve(responce)//将结果封装进resolve
+                }).catch((err) => {
+                    reject(err)
+                });
+            })
+        },
+        //测试程序模板
+        TestProgramTemplate({ commit }, programTemplateInfo) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
+            return new Promise((resolve, reject) => {
+                //封装一个promise
+                testProgramTemplate(programTemplateInfo).then((responce) => {
                     resolve(responce)//将结果封装进resolve
                 }).catch((err) => {
                     reject(err)

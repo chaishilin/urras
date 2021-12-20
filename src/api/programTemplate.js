@@ -34,3 +34,12 @@ export function runProgramTemplate(params) {
         data: params,
     })
 }
+
+export function testProgramTemplate(params) {
+    //测试程序模板
+    return request({
+        url: '/programTemplate/testTemplate',
+        method: 'post',
+        data: params,
+    })
+}

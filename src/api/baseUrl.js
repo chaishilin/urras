@@ -1,3 +1,4 @@
+let domain = "localhost"
 let baseUrl = "";
-baseUrl = "http://localhost:8080/"
+baseUrl = "http://"+domain+":8080/"
 export default baseUrl
