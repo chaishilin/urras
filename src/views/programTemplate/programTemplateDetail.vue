@@ -30,7 +30,7 @@
 
       <codemirror
         class="code-mirror"
-        v-model:value="programTemplateInfo.code"
+        v-model:value="programTemplateInfo.template"
         :options="cmOptions"
       >
       </codemirror>
@@ -106,12 +106,12 @@ export default {
       getSave: false,
       canDelete: false,
       supportLanguageList: [],
-      code: "nothing",
+      template: "nothing",
       language: "java",
       editorOption: {},
       programTemplateInfo: {
         language: "",
-        code: "",
+        template: "",
         createrId: "",
         title: "这是个模板",
         content: "输入接口描述...",
@@ -151,18 +151,17 @@ export default {
   mounted() {
     if (this.$route.query.hasOwnProperty("templateId")) {
       //如果是带参数跳转过来的;
-      this.canDelete = true; //如果有tempalteId 那么当然是可以删除的
+      this.canDelete = true; //templateId 那么当然是可以删除的
       let newProgramTemplateInfo = {
-        tempalteId: this.$route.query.tempalteId,
+        templateId: this.$route.query.templateId,
       };
       this.$store
         .dispatch("ProgramTemplateList", newProgramTemplateInfo)
         .then((result) => {
-          console.log("gaga")
-          console.log(this.programTemplateInfo)
           let status = result.data.code;
-          
           if (status == 200) {
+             console.log("gaga")
+          console.log(result.data.data)
             if (result.data.data.length != 0) {
               this.programTemplateInfo = result.data.data[0];
               if (this.programTemplateInfo.publicState == "01") {
@@ -189,44 +188,12 @@ export default {
     } else {
       //如果是新建页面过来的
       this.programTemplateInfo.language = this.language;
-      this.programTemplateInfo.code = this.code;
+      this.programTemplateInfo.template = this.template;
     }
       
     
   },
   methods: {
-    runCode() {
-      this.getOutput = true;
-      this.programTemplateInfo.outputList = [];
-      this.$store
-        .dispatch("DoProgram", this.programTemplateInfo)
-        .then((result) => {
-          let status = result.data.code;
-          console.log(result.data);
-          if (status == 200) {
-            this.$message({
-              message: "调用成功",
-              type: "success",
-            });
-            this.programTemplateInfo.output = result.data.data.result;
-            this.programTemplateInfo.outputList = this.programTemplateInfo.output.split("\n");
-          } else if (status == 401) {
-            this.$message.error("请先登录");
-            this.$router.push({
-              path: "/",
-            });
-          } else {
-            this.$message.error("调用失败 " + result.data.msg);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          return false;
-        })
-        .finally(() => {
-          this.getOutput = false;
-        });
-    },
     fork(){
       this.$message('正在保存当前模板到用户个人列表')
       this.getSave = true;
@@ -295,7 +262,7 @@ export default {
               type: "success",
             });
             if (result.data.data != "") {
-              this.programTemplateInfo.tempalteId = result.data.data; //如果保存后有了programId，会自动绑定，下次请求时会自动带上
+              this.programTemplateInfo.templateId = result.data.data; //如果保存后有了programId，会自动绑定，下次请求时会自动带上
               this.canDelete = result.data.data != ""; //保存后就可以删除了
             }
           } else if (status == 401) {
@@ -352,10 +319,33 @@ export default {
         });
     },
     runTemplate(){
-      this.$message({
-              message: "正在开发中~",
-              type: "info",
+      this.getOutput = true;
+      this.$store
+        .dispatch("RunProgramTemplate", this.programTemplateInfo)
+        .then((result) => {
+          let status = result.data.code;
+          if (status == 200) {
+            this.$message({
+              message: result.data.msg,
+              type: "success",
             });
+            this.programTemplateInfo.outputList = result.data.data.split("\n");
+           
+          } else if (status == 401) {
+            this.$message.error("请先登录");
+            this.$router.push({
+              path: "/",
+            });
+          } else {
+            this.$message.error(result.data.msg);
+          }
+        })
+        .catch((err) => {
+          return false;
+        })
+        .finally(() => {
+          this.getOutput = false;
+        });
     }
   },
 };

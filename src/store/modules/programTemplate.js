@@ -1,12 +1,12 @@
-import {updateProgramTemplate,programTemplateList,deleteProgramTemplate} from "../../api/programTemplate"
+import {runProgramTemplate,updateProgramTemplate,programTemplateList,deleteProgramTemplate} from "../../api/programTemplate"
 
 const programTemplate = {
     actions: {
         //保存程序模板
-        SaveProgramTemplate({ commit }, programInfo) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
+        SaveProgramTemplate({ commit }, programTemplateInfo) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
             return new Promise((resolve, reject) => {
                 //封装一个promise
-                updateProgramTemplate(programInfo).then((responce) => {
+                updateProgramTemplate(programTemplateInfo).then((responce) => {
                     resolve(responce)//将结果封装进resolve
                 }).catch((err) => {
                     reject(err)
@@ -14,10 +14,10 @@ const programTemplate = {
             })
         },
         //获得程序模板列表
-        ProgramTemplateList({ commit }, programInfo) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
+        ProgramTemplateList({ commit }, programTemplateInfo) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
             return new Promise((resolve, reject) => {
                 //封装一个promise
-                programTemplateList(programInfo).then((responce) => {
+                programTemplateList(programTemplateInfo).then((responce) => {
                     resolve(responce)//将结果封装进resolve
                 }).catch((err) => {
                     reject(err)
@@ -25,10 +25,21 @@ const programTemplate = {
             })
         },
         //删除程序
-        DeleteProgramTemplate({ commit }, programInfo) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
+        DeleteProgramTemplate({ commit }, programTemplateInfo) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
             return new Promise((resolve, reject) => {
                 //封装一个promise
-                deleteProgramTemplate(programInfo).then((responce) => {
+                deleteProgramTemplate(programTemplateInfo).then((responce) => {
+                    resolve(responce)//将结果封装进resolve
+                }).catch((err) => {
+                    reject(err)
+                });
+            })
+        },
+        //测试程序模板
+        RunProgramTemplate({ commit }, programTemplateInfo) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
+            return new Promise((resolve, reject) => {
+                //封装一个promise
+                runProgramTemplate(programTemplateInfo).then((responce) => {
                     resolve(responce)//将结果封装进resolve
                 }).catch((err) => {
                     reject(err)

@@ -25,3 +25,12 @@ export function deleteProgramTemplate(params) {
         data: params,
     })
 }
+
+export function runProgramTemplate(params) {
+    //测试程序模板
+    return request({
+        url: '/programTemplate/runTemplate',
+        method: 'post',
+        data: params,
+    })
+}
