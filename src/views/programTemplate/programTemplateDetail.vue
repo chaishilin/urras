@@ -77,6 +77,7 @@
           :stroke-width="26"
           :percentage="testRate"
         ></el-progress>
+        <el-result v-if="testRate == '100'" icon="success" title="测试完成"></el-result>
       </div>
     </div>
   </div>
@@ -379,7 +380,6 @@ export default {
     wsOnMessage(event) {
       var data = event.data;
       this.testRate = Number(data);
-      
     },
     testTemplate() {
       this.getOutput = true;
