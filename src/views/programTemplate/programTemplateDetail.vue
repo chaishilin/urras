@@ -207,10 +207,12 @@ export default {
     }
   },
   destroyed() {
-    this.websock.close(); //离开路由之后断开websocket连接
+    if(this.websock !== null){
+      this.websock.close(); //离开路由之后断开websocket连接
+    }
   },
   created() {
-    this.initWs();
+    console.log("ws userId:"+localStorage.getItem("userId"))
   },
   methods: {
     fork() {
@@ -368,13 +370,14 @@ export default {
         });
     },
     initWs() {
-      this.websock = new WebSocket(baseWsUrl);
+      console.log("userID: " + localStorage.getItem("userId"))
+      this.websock = new WebSocket(baseWsUrl+"/"+localStorage.getItem("userId"));
       this.websock.onopen = function () {
         console.log("webSocket连接创建。。。");
       };
       this.websock.onmessage = this.wsOnMessage;
       this.websock.onclose = function (e) {
-        console.log("关闭连接" + e);
+        console.log("关闭连接" + e.data);
       };
     },
     wsOnMessage(event) {
@@ -382,6 +385,9 @@ export default {
       this.testRate = Number(data);
     },
     testTemplate() {
+      if(this.websock === null){
+        this.initWs();
+      }
       this.getOutput = true;
       this.$store
         .dispatch("TestProgramTemplate", this.programTemplateInfo)

@@ -38,7 +38,7 @@ export function runProgramTemplate(params) {
 export function testProgramTemplate(params) {
     //测试程序模板
     return request({
-        url: '/programTemplate/testTemplate',
+        url: '/programTemplate/testTemplate/',
         method: 'post',
         data: params,
     })
