@@ -93,7 +93,7 @@ import "codemirror/mode/javascript/javascript.js";
 import "codemirror/theme/dracula.css";
 //编辑器代码高亮css文件
 import "codemirror/addon/hint/show-hint.css";
-import appHeader from "../components/appHeader.vue";
+import appHeader from "../../components/appHeader.vue";
 //代码折叠文件
 require("codemirror/addon/fold/foldcode.js");
 require("codemirror/addon/fold/foldgutter.js");

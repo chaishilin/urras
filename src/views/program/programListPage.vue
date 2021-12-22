@@ -8,7 +8,7 @@
 <script>
 import Anarres from "@/components/Anarres";
 import AppHeader from "@/components/appHeader.vue";
-import ProgramList from "@/components/programList.vue";
+import ProgramList from "@/components/program/programList.vue";
 export default {
   data() {
     return {

@@ -6,18 +6,18 @@ VueRouter.prototype.push = function push(location) {
 }
 Vue.use(VueRouter)
 export const constantRouterMap = [
-  { path: '/', component: () => import('@/views/login') },
-  { path: '/userInfo', component: () => import('@/views/userInfo') },
-  { path: '/programListPage', component: () => import('@/views/programListPage') },
-  { path: '/programTemplateListPage', component: () => import('@/views/programTemplateListPage') },
-  { path: '/doProgramPage', component: () => import('@/views/doProgramPage') },
-  { path: '/programTemplateDetail', component: () => import('@/views/programTemplate/programTemplateDetail') },
-  { path: '/programList', component: () => import('@/components/programList') },
-  { path: '/programItem', component: () => import('@/components/programItem') },
-  { path: '/labelBar', component: () => import('@/components/labelBar') },
-  { path: '/register', component: () => import('@/views/register') },
-  { path: '/resetPassword', component: () => import('@/views/resetPassword') },
+  { path: '/', component: () => import('@/views/user/login') },
+  { path: '/userInfo', component: () => import('@/views/user/userInfo') },
+  { path: '/resetPassword', component: () => import('@/views/user/resetPassword') },
+  { path: '/register', component: () => import('@/views/user/register') },
 
+  { path: '/programListPage', component: () => import('@/views/program/programListPage') },
+  { path: '/doProgramPage', component: () => import('@/views/program/doProgramPage') },
+
+  { path: '/programTemplateDetail', component: () => import('@/views/programTemplate/programTemplateDetail') },
+  { path: '/programTemplateListPage', component: () => import('@/views/programTemplate/programTemplateListPage') },
+  
+  { path: '/labelBar', component: () => import('@/components/labelBar') },
   { path: '/appHeader', component: () => import('@/components/appHeader') }
 
 

@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import programItem from "@/components/programItem";
+import programItem from "./programItem.vue";
 
 export default {
   data() {
