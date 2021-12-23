@@ -25,3 +25,12 @@ export function deleteTestCase(params) {
         data: params,
     })
 }
+
+export function enableTestCase(params) {
+    //应用模板测试案例
+    return request({
+        url: '/testCase/enable',
+        method: 'post',
+        data: params,
+    })
+}

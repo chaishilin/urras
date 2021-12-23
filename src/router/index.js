@@ -17,6 +17,10 @@ export const constantRouterMap = [
   { path: '/programTemplateDetail', component: () => import('@/views/programTemplate/programTemplateDetail') },
   { path: '/programTemplateListPage', component: () => import('@/views/programTemplate/programTemplateListPage') },
   
+  { path: '/testCaseList', component: () => import('@/components/testCase/testCaseList') },
+  { path: '/testCaseItem', component: () => import('@/components/testCase/testCaseItem') },
+
+
   { path: '/labelBar', component: () => import('@/components/labelBar') },
   { path: '/appHeader', component: () => import('@/components/appHeader') }
 
