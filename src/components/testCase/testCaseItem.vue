@@ -1,6 +1,9 @@
 <template>
   <div class="testCaseItem">
     <el-form :model="info" label-width="100px">
+      <el-form-item label="名称">
+        <el-input v-model="info.title"></el-input>
+      </el-form-item>
       <el-form-item label="语言">
         <el-input v-model="info.language"></el-input>
       </el-form-item>
@@ -19,7 +22,25 @@
         <el-input v-model="info.content"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="saveCase">保存</el-button>
+        <div class="button">
+          <el-button type="primary" @click="saveCase(info, true)"
+            >保存</el-button
+          >
+        </div>
+        <div class="button">
+          <el-button type="warning" v-if="info.caseId != null" @click="deleteCase">删除</el-button>
+        </div>
+        <div class="button">
+          <el-tag type="success">启用</el-tag>
+          <el-switch v-model="inUse" @change="enbaleTestCase"></el-switch>
+        </div>
+      </el-form-item>
+      <el-form-item v-if="info.isError">
+        <div class="debugInfo">
+          <div v-for="item in info.debugInfoList">
+            <div v-if="item != ''">{{ item }}</div>
+          </div>
+        </div>
       </el-form-item>
     </el-form>
   </div>
@@ -55,6 +76,7 @@ require("codemirror/mode/clike/clike.js");
 export default {
   data() {
     return {
+      inUse: false,
       testCaseInfo: {
         title: "python 测试",
         caseId: "2323",
@@ -95,17 +117,49 @@ export default {
   props: {
     info: this.testCaseInfo, //testCaseInfo是默认值，vue组件的传参
   },
+  created() {
+    this.inUse = this.info.inUse;
+  },
   methods: {
-    saveCase() {
+    deleteCase() {
       this.$store
-        .dispatch("SaveTestCase", this.info)
+        .dispatch("DeleteTestCase", this.info)
         .then((result) => {
           let status = result.data.code;
           if (status == 200) {
             this.$message({
-              message: "保存成功",
+              message: "删除成功",
               type: "success",
             });
+            this.$emit('flash'); //刷新该组件
+          } else if (status == 401) {
+            this.$router.push({
+              path: "/",
+            });
+          } else {
+            alert(result.data.msg);
+          }
+        })
+        .catch((err) => {
+          return false;
+        });
+    },
+    saveCase(testCaseInfo, sendMsg) {
+      this.$store
+        .dispatch("SaveTestCase", testCaseInfo)
+        .then((result) => {
+          let status = result.data.code;
+          if (status == 200) {
+            if(testCaseInfo.caseId === null){
+              //如果id为空，则其实为新增Case，此时需要刷新，重新加载case列表
+               this.$emit('flash'); //刷新该组件
+            }
+            if (sendMsg == true) {
+              this.$message({
+                message: "保存成功",
+                type: "success",
+              });
+            }
           } else if (status == 401) {
             this.$router.push({
               path: "/",
@@ -121,6 +175,57 @@ export default {
     onSubmit() {
       console.log("submit!");
     },
+    enbaleTestCase() {
+      if (this.inUse === false) {
+        this.info.state = "02";
+        this.saveCase(this.info, false);
+        this.$message({
+          message: "取消启用成功",
+          type: "success",
+        });
+        return;
+      }
+      var IsEnable = false;
+      var debugInfo = "";
+      this.info.isError = IsEnable;
+      this.$store
+        .dispatch("EnableTestCase", this.info)
+        .then((result) => {
+          let status = result.data.code;
+          if (status == 200) {
+            IsEnable = true;
+            this.$message({
+              message: "启用成功",
+              type: "success",
+            });
+          } else if (status == 401) {
+            this.$router.push({
+              path: "/",
+            });
+          } else {
+            debugInfo = result.data.msg;
+            this.$message({
+              message: "启用失败",
+              type: "error",
+            });
+          }
+        })
+        .catch((err) => {
+          this.$message({
+            message: "启用失败",
+            type: "error",
+          });
+        })
+        .finally(() => {
+          if (IsEnable == false) {
+            this.info.isError = true;
+            this.info.debugInfo = "报错信息\n" + debugInfo;
+            this.info.debugInfoList = this.info.debugInfo.split("\n");
+            this.inUse = false; //假如运行失败，如何将inUse的值设为false
+            this.$forceUpdate(); //强制刷新该组件
+          }
+        });
+    },
   },
 };
 </script>
@@ -128,11 +233,20 @@ export default {
 <style>
 .testCaseItem {
   padding: auto;
-  border: 10px solid royalblue;
+  border: 10px solid rgb(175, 202, 191);
 }
 .code-mirror {
   text-align: left;
   font-size: 20px;
   border: 10px solid white;
+}
+.button {
+  display: inline-block;
+  margin-inline: 50px;
+}
+.debugInfo {
+  font-size: 16px;
+  border: 1px solid rgb(36, 26, 175);
+  color: red;
 }
 </style>
