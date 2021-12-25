@@ -1,19 +1,19 @@
 <template>
-  <div class="testCaseItem">
-    <el-form :model="info" label-width="100px">
+  <div class="dataTypeItem">
+    <el-form :model="info" label-width="120px">
       <el-form-item label="名称">
         <el-input v-model="info.title"></el-input>
       </el-form-item>
       <el-form-item label="语言">
         <el-input v-model="info.language"></el-input>
       </el-form-item>
-      <el-form-item label="接口输入">
-        <el-input v-model="info.input"></el-input>
+      <el-form-item label="数据类型示例">
+        <el-input v-model="info.example"></el-input>
       </el-form-item>
-      <el-form-item label="测试代码">
+      <el-form-item label="数据类型定义">
         <codemirror
           class="code-mirror"
-          v-model:value="info.code"
+          v-model:value="info.definition"
           :options="cmOptions"
         >
         </codemirror>
@@ -23,16 +23,21 @@
       </el-form-item>
       <el-form-item>
         <div class="button">
-          <el-button type="primary" @click="saveCase(info, true)"
+          <el-button type="primary" @click="saveCase(info, true,false)"
             >保存</el-button
           >
         </div>
         <div class="button">
-          <el-button type="warning" v-if="info.caseId != null" @click="deleteCase">删除</el-button>
+          <el-button
+            type="warning"
+            v-if="info.dataTypeId != null"
+            @click="deleteCase"
+            >删除</el-button
+          >
         </div>
-        <div class="button">
-          <el-tag type="success">启用</el-tag>
-          <el-switch v-model="inUse" @change="enbaleTestCase"></el-switch>
+        <div class="button" v-if="info.dataTypeId != null">
+          <el-tag type="info">启用状态</el-tag>
+          <el-switch v-model="info.inUse" @change="enbaleDataType"></el-switch>
         </div>
       </el-form-item>
       <el-form-item v-if="info.isError">
@@ -76,15 +81,15 @@ require("codemirror/mode/clike/clike.js");
 export default {
   data() {
     return {
-      inUse: false,
-      testCaseInfo: {
+      isDynamic:false,
+      dataTypeInfo: {
         title: "python 测试",
-        caseId: "2323",
+        dataTypeId: "2323",
         inUse: true,
         language: "python",
-        input: "1,2,3",
+        example: "[1,2,3]",
         content: "备注...",
-        code: "python something def so是mething",
+        definition: "List<Integer>",
         createrId: "232",
       },
       cmOptions: {
@@ -115,15 +120,13 @@ export default {
     codemirror,
   },
   props: {
-    info: this.testCaseInfo, //testCaseInfo是默认值，vue组件的传参
+    info: this.dataTypeInfo, //dataTypeInfo是默认值，vue组件的传参
   },
-  created() {
-    this.inUse = this.info.inUse;
-  },
+  created() {},
   methods: {
     deleteCase() {
       this.$store
-        .dispatch("DeleteTestCase", this.info)
+        .dispatch("DeleteDataType", this.info)
         .then((result) => {
           let status = result.data.code;
           if (status == 200) {
@@ -131,7 +134,7 @@ export default {
               message: "删除成功",
               type: "success",
             });
-            this.$emit('flash'); //刷新该组件
+            this.$emit("flash"); //刷新该组件
           } else if (status == 401) {
             this.$router.push({
               path: "/",
@@ -144,15 +147,16 @@ export default {
           return false;
         });
     },
-    saveCase(testCaseInfo, sendMsg) {
+    saveCase(dataTypeInfo, sendMsg,enableChanged) {
       this.$store
-        .dispatch("SaveTestCase", testCaseInfo)
+        .dispatch("SaveDataType", dataTypeInfo)
         .then((result) => {
           let status = result.data.code;
           if (status == 200) {
-            if(testCaseInfo.caseId === null){
+            if (dataTypeInfo.dataTypeId === null || enableChanged == true) {
               //如果id为空，则其实为新增Case，此时需要刷新，重新加载case列表
-               this.$emit('flash'); //刷新该组件
+              //如果改变了启用状态，也要刷新
+              this.$emit("flash"); //刷新该组件
             }
             if (sendMsg == true) {
               this.$message({
@@ -175,21 +179,25 @@ export default {
     onSubmit() {
       console.log("submit!");
     },
-    enbaleTestCase() {
-      if (this.inUse === false) {
+    enbaleDataType() {
+      if (this.info.inUse === false) {
         this.info.state = "02";
-        this.saveCase(this.info, false);
+        this.saveCase(this.info,false,true);
         this.$message({
           message: "取消启用成功",
           type: "success",
         });
+        //由于是异步请求，所以先等保存后再刷新组件重新请求list
+        //this.info.inUse = false;
+        //this.info.inUse = false;
+        //this.$emit("flash"); //刷新该组件
         return;
       }
       var IsEnable = false;
       var debugInfo = "";
       this.info.isError = IsEnable;
       this.$store
-        .dispatch("EnableTestCase", this.info)
+        .dispatch("EnableDataType", this.info)
         .then((result) => {
           let status = result.data.code;
           if (status == 200) {
@@ -217,11 +225,12 @@ export default {
           });
         })
         .finally(() => {
+          this.$emit("flash"); //刷新该组件
           if (IsEnable == false) {
             this.info.isError = true;
             this.info.debugInfo = "报错信息\n" + debugInfo;
             this.info.debugInfoList = this.info.debugInfo.split("\n");
-            this.inUse = false; //假如运行失败，如何将inUse的值设为false
+            this.info.inUse = false; //假如运行失败，如何将inUse的值设为false
             this.$forceUpdate(); //强制刷新该组件
           }
         });
@@ -231,7 +240,7 @@ export default {
 </script>
 
 <style>
-.testCaseItem {
+.dataTypeItem {
   padding: auto;
   border: 10px solid rgb(175, 202, 191);
 }

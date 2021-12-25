@@ -15,6 +15,9 @@
       <el-menu-item index="programTemplateList"
         ><span style="font-size: 20px">程序模板</span></el-menu-item
       >
+      <el-menu-item index="testCasePage"
+        ><span style="font-size: 20px">数据类型列表</span></el-menu-item
+      >
       <el-submenu index="user" class="user">
         <template slot="title">
           <img src="../assets/logo.png" size="30" height="30" width="30" />
@@ -48,6 +51,10 @@ export default {
       } else if (key == "programTemplateList"){
           this.$router.push({
           path: "/programTemplateListPage",
+        });
+      }else if (key == "testCasePage"){
+          this.$router.push({
+          path: "/dataTypePage",
         });
       } else if (key == "index") {
         this.$router.push({

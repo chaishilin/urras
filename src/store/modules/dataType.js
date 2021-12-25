@@ -1,12 +1,12 @@
-import {enableTestCase,updateTestCase,testCaseList,deleteTestCase} from "../../api/testCase"
+import {enableDataType,updateDataType,dataTypeList,deleteDataType} from "../../api/dataType"
 
-const testCase = {
+const dataType = {
     actions: {
         //保存程序模板
-        SaveTestCase({ commit }, testCaseInfo) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
+        SaveDataType({ commit }, dataTypeInfo) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
             return new Promise((resolve, reject) => {
                 //封装一个promise
-                updateTestCase(testCaseInfo).then((responce) => {
+                updateDataType(dataTypeInfo).then((responce) => {
                     resolve(responce)//将结果封装进resolve
                 }).catch((err) => {
                     reject(err)
@@ -14,10 +14,10 @@ const testCase = {
             })
         },
         //获得程序模板列表
-        TestCaseList({ commit }, testCaseInfo) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
+        DataTypeList({ commit }, dataTypeInfo) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
             return new Promise((resolve, reject) => {
                 //封装一个promise
-                testCaseList(testCaseInfo).then((responce) => {
+                dataTypeList(dataTypeInfo).then((responce) => {
                     resolve(responce)//将结果封装进resolve
                 }).catch((err) => {
                     reject(err)
@@ -25,10 +25,10 @@ const testCase = {
             })
         },
         //删除程序
-        DeleteTestCase({ commit }, testCaseInfo) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
+        DeleteDataType({ commit }, dataTypeInfo) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
             return new Promise((resolve, reject) => {
                 //封装一个promise
-                deleteTestCase(testCaseInfo).then((responce) => {
+                deleteDataType(dataTypeInfo).then((responce) => {
                     resolve(responce)//将结果封装进resolve
                 }).catch((err) => {
                     reject(err)
@@ -36,10 +36,10 @@ const testCase = {
             })
         },
         //测试程序模板
-        EnableTestCase({ commit }, testCaseInfo) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
+        EnableDataType({ commit }, dataTypeInfo) {//定义Login方法，在组件中使用this.$store.dispatch("Login")调用
             return new Promise((resolve, reject) => {
                 //封装一个promise
-                enableTestCase(testCaseInfo).then((responce) => {
+                enableDataType(dataTypeInfo).then((responce) => {
                     resolve(responce)//将结果封装进resolve
                 }).catch((err) => {
                     reject(err)
@@ -48,4 +48,4 @@ const testCase = {
         }
     }
 }
-export default testCase
+export default dataType

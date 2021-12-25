@@ -1,64 +1,67 @@
 <template>
-  <div class="testCaseList">
+  <div class="dataTypeList">
     <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item
-        v-model="this.testCaseInfo"
-        :name="testCaseInfo.caseId"
-        :key="testCaseInfo.caseId"
+        v-model="this.dataTypeInfo"
+        :name="dataTypeInfo.dataTypeId"
+        :key="dataTypeInfo.dataTypeId"
       >
         <template slot="title">
-          <el-tag type="primary"> 新建测试用例 </el-tag>
+          <el-tag type="primary"> 新建数据类型 </el-tag>
         </template>
-        <test-case-item @flash="flash" :info="testCaseInfo"></test-case-item>
+        <data-type-item @flash="flash" :info="dataTypeInfo"></data-type-item>
       </el-collapse-item>
       <el-collapse-item
-        v-for="(testCaseInfo, index) in testCaseInfoList"
-        :name="testCaseInfo.caseId"
-        :key="testCaseInfo.caseId"
+        v-for="(dataTypeInfo, index) in dataTypeInfoList"
+        :name="dataTypeInfo.dataTypeId"
+        :key="dataTypeInfo.dataTypeId"
       >
         <template slot="title">
-          <h3 class="caseTitle">{{ testCaseInfo.title}}</h3>
-          <el-tag class="caseTitle" type="info" >{{ testCaseInfo.language }}</el-tag>
+          <h3 class="caseTitle">{{ dataTypeInfo.title }}</h3>
+          <el-tag class="caseTitle" type="success">{{
+            dataTypeInfo.language
+          }}</el-tag>
+          <el-tag
+            v-if="dataTypeInfo.inUse == true"
+            class="caseTitle"
+            type="success"
+            >已启用</el-tag
+          >
+          <el-tag
+            v-else
+            class="caseTitle"
+            type="warning"
+            >未启用</el-tag
+          >
         </template>
-        <test-case-item @flash="flash" :info="testCaseInfo"></test-case-item>
+        <data-type-item @flash="flash" :info="dataTypeInfo"></data-type-item>
       </el-collapse-item>
     </el-collapse>
   </div>
 </template>
 
 <script>
-import TestCaseItem from "./testCaseItem.vue";
+import DataTypeItem from "./dataTypeItem.vue";
 
 export default {
   data() {
     return {
-      testCaseQuery: {},
-      testCaseInfo: {
-        title: "新增 测试",
-        caseId: null,
+      dataTypeQuery: {},
+      dataTypeInfo: {
+        title: "列表",
+        dataTypeId: null,
         inUse: false,
         language: "python",
-        input: "1,2,3",
+        example: "[1,2,3]",
         content: "备注...",
-        code: "~~",
+        definition: "动态语言不需要",
         createrId: "232",
         state: "01",
-        isUse: true,
+        inUse: true,
+        isDynamic:true,
       },
-      testCaseInfoList: [
+      dataTypeInfoList: [
         {
-          title: "java 测试",
-          caseId: "2323",
-          inUse: true,
-          language: "python",
-          input: "1,2,3",
-          content: "备注...",
-          code: "java~~",
-          createrId: "232",
-          state: "01",
-          isUse: true,
-          isError: false,
-          debugInfo: "",
         },
       ],
 
@@ -66,7 +69,7 @@ export default {
     };
   },
   components: {
-    TestCaseItem,
+    DataTypeItem,
   },
   created() {
     this.getCaseList();
@@ -78,12 +81,12 @@ export default {
     },
     getCaseList() {
       this.$store
-        .dispatch("TestCaseList", this.testCaseQuery)
+        .dispatch("DataTypeList", this.dataTypeQuery)
         .then((result) => {
           let status = result.data.code;
           if (status == 200) {
-            this.testCaseInfoList = result.data.data;
-            for (let item of this.testCaseInfoList) {
+            this.dataTypeInfoList = result.data.data;
+            for (let item of this.dataTypeInfoList) {
               item.isError = false;
               item.debugInfo = "";
               if (item.state === "01") {
@@ -112,7 +115,7 @@ export default {
 </script>
 
 <style>
-.caseTitle{
+.caseTitle {
   margin: 10px;
 }
 </style>
