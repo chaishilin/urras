@@ -180,6 +180,9 @@ export default {
       console.log("submit!");
     },
     enbaleDataType() {
+      var IsEnable = false;
+      var debugInfo = "";
+      this.info.isError = false;
       if (this.info.inUse === false) {
         this.info.state = "02";
         this.saveCase(this.info,false,true);
@@ -187,15 +190,9 @@ export default {
           message: "取消启用成功",
           type: "success",
         });
-        //由于是异步请求，所以先等保存后再刷新组件重新请求list
-        //this.info.inUse = false;
-        //this.info.inUse = false;
-        //this.$emit("flash"); //刷新该组件
         return;
       }
-      var IsEnable = false;
-      var debugInfo = "";
-      this.info.isError = IsEnable;
+      
       this.$store
         .dispatch("EnableDataType", this.info)
         .then((result) => {
@@ -225,14 +222,17 @@ export default {
           });
         })
         .finally(() => {
-          this.$emit("flash"); //刷新该组件
+          //不知道为什么但是这么写就对了……
           if (IsEnable == false) {
+            console.log(debugInfo)
             this.info.isError = true;
             this.info.debugInfo = "报错信息\n" + debugInfo;
             this.info.debugInfoList = this.info.debugInfo.split("\n");
             this.info.inUse = false; //假如运行失败，如何将inUse的值设为false
-            this.$forceUpdate(); //强制刷新该组件
+          }else{
+            this.$emit("flash"); //刷新该组件
           }
+          this.$forceUpdate(); //强制刷新该组件
         });
     },
   },

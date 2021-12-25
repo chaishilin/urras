@@ -18,21 +18,18 @@
       >
         <template slot="title">
           <h3 class="caseTitle">{{ dataTypeInfo.title }}</h3>
+          <h4 class="caseTitle">{{ dataTypeInfo.definition }}</h4>
           <el-tag class="caseTitle" type="success">{{
             dataTypeInfo.language
           }}</el-tag>
+
           <el-tag
             v-if="dataTypeInfo.inUse == true"
             class="caseTitle"
             type="success"
             >已启用</el-tag
           >
-          <el-tag
-            v-else
-            class="caseTitle"
-            type="warning"
-            >未启用</el-tag
-          >
+          <el-tag v-else class="caseTitle" type="warning">未启用</el-tag>
         </template>
         <data-type-item @flash="flash" :info="dataTypeInfo"></data-type-item>
       </el-collapse-item>
@@ -58,12 +55,9 @@ export default {
         createrId: "232",
         state: "01",
         inUse: true,
-        isDynamic:true,
+        isDynamic: true,
       },
-      dataTypeInfoList: [
-        {
-        },
-      ],
+      dataTypeInfoList: [{}],
 
       activeNames: ["2323", "23233"],
     };
